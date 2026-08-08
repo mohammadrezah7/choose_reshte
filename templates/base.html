@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}سامانه انتخاب رشته{% endblock %}</title>
+    <!-- Tailwind CSS & Flowbite -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    <style>
+    body {
+        font-family: sans-serif;
+    }
+</style>
+
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200 px-4 py-2.5 fixed left-0 right-0 top-0 z-50">
+        <div class="flex flex-wrap justify-between items-center">
+            <div class="flex justify-start items-center">
+                <span class="relative inline-block self-center text-xl font-semibold whitespace-nowrap text-blue-600">
+    پنل انتخاب رشته
+
+    <!-- خط آبی منحنی زیر متن -->
+    <svg
+        class="absolute -bottom-2 right-0 h-3 w-full pointer-events-none"
+        viewBox="0 0 200 20"
+        preserveAspectRatio="none"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+
+        <path
+            d="M 5,10 C 55,18 145,18 195,8"
+            stroke="currentColor"
+            stroke-width="4"
+            stroke-linecap="round">
+        </path>
+    </svg>
+</span>
+
+            </div>
+            <div class="flex items-center lg:order-2">
+                {% if user.is_authenticated %}
+                    <span class="ml-3 text-sm text-gray-500">{{ user.username }} خوش آمدید</span>
+                    <a href="{% url 'logout' %}" class="text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-4 py-2">خروج</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-gray-800 hover:bg-gray-50 font-medium rounded-lg text-sm px-4 py-2 ml-2">ورود</a>
+                    <a href="{% url 'signup' %}" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2">ثبت‌نام</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div>
+    {% block content %}{% endblock %}
+</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+</body>
+</html>

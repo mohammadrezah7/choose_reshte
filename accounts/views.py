@@ -1,32 +1,53 @@
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate, logout
+from django.db import IntegrityError
+
 from .forms import RegisterForm
 from .models import Profile
-from django.http import HttpResponse
-from django.contrib.auth import authenticate, logout
 
 
 def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
+
         if form.is_valid():
             username = form.cleaned_data["username"]
-            email = form.cleaned_data["email"]
             password = form.cleaned_data["password"]
 
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                password=password
-            )
-            Profile.objects.create(user=user)
+            try:
+                user = User.objects.create_user(
+                    username=username,
+                    password=password
+                )
+
+                Profile.objects.create(user=user)
+
+            except IntegrityError:
+                form.add_error(
+                    "username",
+                    "این نام کاربری قبلاً ثبت شده است. لطفاً نام کاربری دیگری انتخاب کنید."
+                )
+
+                return render(
+                    request,
+                    "accounts/signup.html",
+                    {"form": form}
+                )
+
             login(request, user)
-            return redirect("accounts/signup.html")
+
+            return redirect("dashboard")
 
     else:
         form = RegisterForm()
-    return render(request, "accounts/signup.html")
+
+    return render(
+        request,
+        "accounts/signup.html",
+        {"form": form}
+    )
 
 
 def login_view(request):
@@ -52,11 +73,10 @@ def login_view(request):
             }
         )
 
-    return render(
-        request,
-        "accounts/login.html"
-    )
+    return render(request, "accounts/login.html")
+
 
 def logout_view(request):
     logout(request)
     return redirect("login")
+

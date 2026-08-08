@@ -19,5 +19,10 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls'))
+    path('accounts/', include('accounts.urls')),
+    path('dashboard/', include('dashboard.urls')), # جدید: اضافه کردن مسیر داشبورد
+    # بعداً برای سایر اپ‌ها هم همین کار را بکنید:
+    # path('exam/', include('exam.urls')),
+    # path('reports/', include('reports.urls')),
 ]
+

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}داشبورد مدیریتی{% endblock %}
+
+{% block content %}
+<div class="p-4 sm:ml-4">
+   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+      <!-- کارت شروع آزمون -->
+      <div class="flex items-center justify-between p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100">
+         <div>
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">آزمون جدید</h5>
+            <p class="font-normal text-gray-700">شروع فرآیند تست روانشناسی و انتخاب رشته.</p>
+         </div>
+         <a href="/exam/" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800">شروع آزمون</a>
+      </div>
+
+      <!-- کارت مشاهده نتایج -->
+      <div class="flex items-center justify-between p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100">
+         <div>
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">گزارش‌های من</h5>
+            <p class="font-normal text-gray-700">مشاهده تحلیل‌های قبلی و پیشنهادات رشته.</p>
+         </div>
+         <a href="/reports/" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700">مشاهده</a>
+      </div>
+   </div>
+
+   <!-- بخش آمار یا راهنما -->
+   <div class="p-8 bg-white border border-gray-200 rounded-lg shadow">
+      <h2 class="text-xl font-bold mb-4">راهنمای سامانه</h2>
+      <ul class="list-disc pr-5 text-gray-600">
+         <li>ابتدا آزمون رغبت‌سنجی را کامل کنید.</li>
+         <li>پس از اتمام، سیستم به صورت هوشمند نتایج را تحلیل می‌کند.</li>
+         <li>در بخش گزارش‌ها، لیست رشته‌های پیشنهادی را دانلود کنید.</li>
+      </ul>
+   </div>
+</div>
+{% endblock %}
