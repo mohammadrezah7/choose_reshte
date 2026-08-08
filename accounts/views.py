@@ -4,7 +4,7 @@ from django.contrib.auth import login
 from .forms import RegisterForm
 from .models import Profile
 from django.http import HttpResponse
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout
 
 
 def register_view(request):
@@ -56,3 +56,7 @@ def login_view(request):
         request,
         "accounts/login.html"
     )
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
