@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,7 +42,7 @@ INSTALLED_APPS = [
     'ans_generate',
     'dashboard',
     'exam',
-    'reports'
+    'reports',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,13 @@ LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AI_PROVIDER = os.environ.get("AI_PROVIDER", "openai")
+ 
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+ 
+# در صورتی که بعداً خواستید به Anthropic هم سوییچ کنید، کد از آن هم
+# پشتیبانی می‌کند (کافی است AI_PROVIDER="anthropic" و ANTHROPIC_API_KEY را ست کنید).
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+ANTHROPIC_MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-5")

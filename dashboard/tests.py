@@ -1,8 +1,10 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
 from accounts.models import Profile
+
+User = get_user_model()
 
 
 class DashboardViewTest(TestCase):
@@ -45,7 +47,7 @@ class DashboardViewTest(TestCase):
 
         self.assertTemplateUsed(
             response,
-            "dashboard.html"
+            "dashboard/dashboard.html"
         )
 
     def test_profile_is_sent_to_template(self):

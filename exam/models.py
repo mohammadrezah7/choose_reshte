@@ -4,6 +4,7 @@ from django.db import models
 
 
 class StudentExamProfile(models.Model):
+
     class Gender(models.TextChoices):
         MALE = "male", "مرد"
         FEMALE = "female", "زن"
@@ -15,7 +16,6 @@ class StudentExamProfile(models.Model):
         ART = "art", "هنر"
         LANGUAGES = "languages", "زبان‌های خارجی"
 
-        
     class Quota(models.TextChoices):
         REGION_1 = "region_1", "منطقه ۱"
         REGION_2 = "region_2", "منطقه ۲"
@@ -23,6 +23,12 @@ class StudentExamProfile(models.Model):
         MARTYR_5 = "martyr_5", "ایثارگران ۵ درصد"
         MARTYR_25 = "martyr_25", "ایثارگران ۲۵ درصد"
         OTHER = "other", "سایر"
+
+    class SelectionType(models.TextChoices):
+        NATIONAL = "national", "کشوری"
+        POLE = "pole", "قطبی"
+        AREA = "area", "ناحیه‌ای"
+        PROVINCE = "province", "استانی"
 
     class Course(models.TextChoices):
         DAYTIME = "daytime", "روزانه"
@@ -44,49 +50,67 @@ class StudentExamProfile(models.Model):
         related_name="exam_profile",
         verbose_name="کاربر",
     )
+
     full_name = models.CharField(
         max_length=150,
         verbose_name="نام و نام خانوادگی داوطلب",
     )
+
     gender = models.CharField(
         max_length=10,
         choices=Gender.choices,
         verbose_name="جنسیت",
     )
+
     exam_group = models.CharField(
-        max_length=100,
+        max_length=20,
+        choices=ExamGroup.choices,
         verbose_name="گروه آزمایشی",
     )
+
     exam_year = models.PositiveIntegerField(
         verbose_name="سال کنکور",
     )
+
     province = models.CharField(
         max_length=100,
         verbose_name="استان محل سکونت",
     )
+
     city = models.CharField(
         max_length=100,
         verbose_name="شهر محل سکونت",
     )
+
     quota = models.CharField(
         max_length=30,
         choices=Quota.choices,
         verbose_name="سهمیه",
     )
+
     region = models.CharField(
         max_length=50,
         blank=True,
         verbose_name="منطقه",
     )
+
     native_area = models.CharField(
         max_length=150,
         blank=True,
         verbose_name="ناحیه بومی",
     )
+
     native_pole = models.CharField(
         max_length=150,
         blank=True,
         verbose_name="قطب بومی",
+    )
+
+    selection_type = models.CharField(
+        max_length=20,
+        choices=SelectionType.choices,
+        blank=True,
+        verbose_name="نوع گزینش رشته",
     )
 
     rank_in_quota = models.PositiveIntegerField(
@@ -94,16 +118,19 @@ class StudentExamProfile(models.Model):
         blank=True,
         verbose_name="رتبه در سهمیه",
     )
+
     rank_in_region = models.PositiveIntegerField(
         null=True,
         blank=True,
         verbose_name="رتبه در منطقه",
     )
+
     national_rank = models.PositiveIntegerField(
         null=True,
         blank=True,
         verbose_name="رتبه کشوری",
     )
+
     total_score = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -111,6 +138,7 @@ class StudentExamProfile(models.Model):
         blank=True,
         verbose_name="تراز کل",
     )
+
     exam_score = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -118,6 +146,7 @@ class StudentExamProfile(models.Model):
         blank=True,
         verbose_name="تراز کنکور / آزمون اختصاصی",
     )
+
     academic_record_score = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -125,6 +154,7 @@ class StudentExamProfile(models.Model):
         blank=True,
         verbose_name="تراز سوابق تحصیلی",
     )
+
     final_score = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -137,42 +167,55 @@ class StudentExamProfile(models.Model):
         max_length=20,
         choices=AllowedStatus.choices,
         default=AllowedStatus.UNKNOWN,
+        blank=True,
         verbose_name="مجاز بودن روزانه",
     )
+
     allowed_night = models.CharField(
         max_length=20,
         choices=AllowedStatus.choices,
         default=AllowedStatus.UNKNOWN,
+        blank=True,
         verbose_name="مجاز بودن نوبت دوم / شبانه",
     )
+
     allowed_campus = models.CharField(
         max_length=20,
         choices=AllowedStatus.choices,
         default=AllowedStatus.UNKNOWN,
+        blank=True,
         verbose_name="مجاز بودن پردیس خودگردان",
     )
+
     allowed_azad = models.CharField(
         max_length=20,
         choices=AllowedStatus.choices,
         default=AllowedStatus.UNKNOWN,
+        blank=True,
         verbose_name="مجاز بودن دانشگاه آزاد",
     )
+
     allowed_payame_noor = models.CharField(
         max_length=20,
         choices=AllowedStatus.choices,
         default=AllowedStatus.UNKNOWN,
+        blank=True,
         verbose_name="مجاز بودن پیام‌نور",
     )
+
     allowed_non_profit = models.CharField(
         max_length=20,
         choices=AllowedStatus.choices,
         default=AllowedStatus.UNKNOWN,
+        blank=True,
         verbose_name="مجاز بودن غیرانتفاعی",
     )
+
     allowed_other = models.CharField(
         max_length=20,
         choices=AllowedStatus.choices,
         default=AllowedStatus.UNKNOWN,
+        blank=True,
         verbose_name="مجاز بودن سایر دوره‌ها",
     )
 
@@ -186,22 +229,27 @@ class StudentExamProfile(models.Model):
         blank=True,
         verbose_name="حداکثر شهریه قابل پرداخت سالانه (تومان)",
     )
+
     can_pay_night = models.BooleanField(
         default=False,
         verbose_name="توان پرداخت شهریه شبانه",
     )
+
     can_pay_campus = models.BooleanField(
         default=False,
         verbose_name="توان پرداخت شهریه پردیس",
     )
+
     can_pay_azad = models.BooleanField(
         default=False,
         verbose_name="توان پرداخت شهریه دانشگاه آزاد",
     )
+
     can_pay_payame_noor = models.BooleanField(
         default=False,
         verbose_name="توان پرداخت شهریه پیام‌نور",
     )
+
     can_pay_non_profit = models.BooleanField(
         default=False,
         verbose_name="توان پرداخت شهریه غیرانتفاعی",
@@ -212,22 +260,27 @@ class StudentExamProfile(models.Model):
         blank=True,
         verbose_name="حداکثر فاصله از محل سکونت (کیلومتر)",
     )
+
     accepted_provinces = models.TextField(
         blank=True,
         verbose_name="استان‌های مورد قبول",
     )
+
     rejected_provinces = models.TextField(
         blank=True,
         verbose_name="استان‌های غیرقابل قبول",
     )
+
     preferred_cities = models.TextField(
         blank=True,
         verbose_name="شهرهای مورد علاقه",
     )
+
     rejected_cities = models.TextField(
         blank=True,
         verbose_name="شهرهای غیرقابل قبول",
     )
+
     geographic_distance_is_important = models.BooleanField(
         default=True,
         verbose_name="فاصله جغرافیایی اهمیت دارد",
@@ -237,6 +290,7 @@ class StudentExamProfile(models.Model):
         auto_now_add=True,
         verbose_name="زمان ایجاد",
     )
+
     updated_at = models.DateTimeField(
         auto_now=True,
         verbose_name="آخرین ویرایش",
@@ -251,16 +305,19 @@ class StudentExamProfile(models.Model):
 
 
 class InterestedMajor(models.Model):
+
     profile = models.ForeignKey(
         StudentExamProfile,
         on_delete=models.CASCADE,
         related_name="interested_majors",
         verbose_name="پروفایل داوطلب",
     )
+
     major_name = models.CharField(
         max_length=150,
         verbose_name="نام رشته",
     )
+
     interest_score = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(0),
@@ -279,12 +336,14 @@ class InterestedMajor(models.Model):
 
 
 class RejectedMajor(models.Model):
+
     profile = models.ForeignKey(
         StudentExamProfile,
         on_delete=models.CASCADE,
         related_name="rejected_majors",
         verbose_name="پروفایل داوطلب",
     )
+
     major_name = models.CharField(
         max_length=150,
         verbose_name="نام رشته",
@@ -299,39 +358,52 @@ class RejectedMajor(models.Model):
 
 
 class CriterionWeight(models.Model):
+
     profile = models.OneToOneField(
         StudentExamProfile,
         on_delete=models.CASCADE,
         related_name="criterion_weights",
         verbose_name="پروفایل داوطلب",
     )
+
+    interest = models.PositiveSmallIntegerField(
+        default=10,
+        validators=[MinValueValidator(0), MaxValueValidator(10)],
+        verbose_name="وزن علاقه به رشته",
+    )
+
     university_reputation = models.PositiveSmallIntegerField(
         default=5,
         validators=[MinValueValidator(0), MaxValueValidator(10)],
         verbose_name="اعتبار کلی دانشگاه",
     )
+
     faculty_quality = models.PositiveSmallIntegerField(
-        default=5,
+        default=8,
         validators=[MinValueValidator(0), MaxValueValidator(10)],
         verbose_name="کیفیت تخصصی دانشکده / گروه آموزشی",
     )
+
     job_market = models.PositiveSmallIntegerField(
-        default=5,
+        default=7,
         validators=[MinValueValidator(0), MaxValueValidator(10)],
         verbose_name="بازار کار",
     )
+
     income_potential = models.PositiveSmallIntegerField(
         default=5,
         validators=[MinValueValidator(0), MaxValueValidator(10)],
         verbose_name="پتانسیل درآمد",
     )
+
     immigration_potential = models.PositiveSmallIntegerField(
-        default=5,
+        default=2,
         validators=[MinValueValidator(0), MaxValueValidator(10)],
         verbose_name="امکان مهاجرت",
     )
+
     academic_career = models.PositiveSmallIntegerField(
-        default=5,
+        default=0,
         validators=[MinValueValidator(0), MaxValueValidator(10)],
         verbose_name="امکان هیئت علمی",
     )
@@ -345,12 +417,14 @@ class CriterionWeight(models.Model):
 
 
 class AcceptedCourse(models.Model):
+
     profile = models.ForeignKey(
         StudentExamProfile,
         on_delete=models.CASCADE,
         related_name="accepted_courses",
         verbose_name="پروفایل داوطلب",
     )
+
     course = models.CharField(
         max_length=30,
         choices=StudentExamProfile.Course.choices,

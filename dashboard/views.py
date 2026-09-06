@@ -61,6 +61,6 @@ def dashboard_view(request):
 
     return render(
         request,
-        "dashboard/index.html",
+        "dashboard/dashboard.html",
         context
     )

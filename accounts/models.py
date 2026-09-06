@@ -1,12 +1,13 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
 
     user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="profile"
     )
 
     phone_number = models.CharField(
@@ -19,7 +20,8 @@ class Profile(models.Model):
         max_length=10,
         unique=True,
         blank=True,
-        null=True
+        null=True,
+        default=None
     )
 
     birth_date = models.DateField(

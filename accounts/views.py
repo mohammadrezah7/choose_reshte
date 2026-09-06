@@ -1,11 +1,11 @@
-
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate, logout
-from django.db import IntegrityError
+from django.contrib.auth import get_user_model, login, authenticate, logout
+from django.db import IntegrityError, transaction
 
 from .forms import RegisterForm
 from .models import Profile
+
+User = get_user_model()
 
 
 def register_view(request):
@@ -17,12 +17,13 @@ def register_view(request):
             password = form.cleaned_data["password"]
 
             try:
-                user = User.objects.create_user(
-                    username=username,
-                    password=password
-                )
+                with transaction.atomic():
+                    user = User.objects.create_user(
+                        username=username,
+                        password=password
+                    )
 
-                Profile.objects.create(user=user)
+                    Profile.objects.create(user=user)
 
             except IntegrityError:
                 form.add_error(
@@ -79,4 +80,3 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
-

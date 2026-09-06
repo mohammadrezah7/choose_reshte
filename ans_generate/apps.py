@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class AnsGenerateConfig(AppConfig):
-    name = 'ans_generate'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "ans_generate"

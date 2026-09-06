@@ -14,8 +14,6 @@ class ExamGroupFilter(admin.SimpleListFilter):
     parameter_name = "exam_group"
 
     def lookups(self, request, model_admin):
-        # همه گزینه‌های ثابت مدل را نمایش می‌دهد،
-        # حتی اگر برای بعضی از آن‌ها رکوردی وجود نداشته باشد.
         return StudentExamProfile.ExamGroup.choices
 
     def queryset(self, request, queryset):
@@ -48,21 +46,26 @@ class CriterionWeightInline(admin.StackedInline):
 
 @admin.register(StudentExamProfile)
 class StudentExamProfileAdmin(admin.ModelAdmin):
+
     list_display = (
         "full_name",
         "user",
         "exam_group",
         "exam_year",
         "province",
-        "rank_in_quota",
+        "city",
+        "quota",
+        "selection_type",
+        "national_rank",
         "final_score",
     )
 
     list_filter = (
-        ExamGroupFilter,  # جایگزین "exam_group"
+        ExamGroupFilter,
         "exam_year",
         "gender",
         "quota",
+        "selection_type",
         "geographic_distance_is_important",
     )
 
@@ -73,9 +76,14 @@ class StudentExamProfileAdmin(admin.ModelAdmin):
         "city",
     )
 
-    inlines = [
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+    )
+
+    inlines = (
         InterestedMajorInline,
         RejectedMajorInline,
         AcceptedCourseInline,
         CriterionWeightInline,
-    ]
+    )
