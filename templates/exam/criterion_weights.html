@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}وزن معیارهای انتخاب رشته{% endblock %}
+
+{% block content %}
+<div class="p-4 sm:ml-4 max-w-2xl">
+
+   <a href="{% url 'exam:exam_profile' %}" class="text-sm text-blue-600 hover:underline">← بازگشت به پروفایل</a>
+
+   <div class="mt-4">
+      <h1 class="text-2xl font-bold text-gray-900">وزن معیارهای انتخاب رشته</h1>
+      <p class="text-gray-500 mt-1 mb-6">
+         به هر معیار، عددی بین ۰ تا ۱۰ بدهید تا هوش مصنوعی بر اساس اولویت‌های شما تحلیل کند.
+         {% if not criterion_weights %}
+            در صورت عدم تعیین، مقادیر پیش‌فرض سیستم اعمال خواهد شد.
+         {% endif %}
+      </p>
+
+      {% if form.non_field_errors %}
+         <div class="mb-4 p-3 rounded-lg text-sm bg-red-50 text-red-700 border border-red-200">
+            {{ form.non_field_errors }}
+         </div>
+      {% endif %}
+
+      <form method="post" class="p-6 bg-white border border-gray-200 rounded-lg shadow space-y-5">
+         {% csrf_token %}
+
+         {% for f in form %}
+            <div>
+               <div class="flex items-center justify-between mb-1">
+                  <label class="text-sm font-medium text-gray-700">{{ f.label }}</label>
+                  <span class="text-xs text-gray-400">از ۰ تا ۱۰</span>
+               </div>
+               {{ f }}
+               {% if f.errors %}
+                  <p class="mt-1 text-xs text-red-600">{{ f.errors|join:" " }}</p>
+               {% endif %}
+            </div>
+         {% endfor %}
+
+         <button type="submit"
+            class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
+            ذخیره وزن معیارها
+         </button>
+      </form>
+   </div>
+</div>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% block title %}خلاصه پروفایل انتخاب رشته{% endblock %}
+
+{% block content %}
+<div class="p-4 sm:ml-4 space-y-6 max-w-4xl">
+
+   <div class="flex items-center justify-between">
+      <div>
+         <h1 class="text-2xl font-bold text-gray-900">خلاصه پروفایل انتخاب رشته</h1>
+         <p class="text-gray-500 mt-1">{{ exam_profile.full_name }}</p>
+      </div>
+      <a href="{% url 'exam:exam_profile' %}"
+         class="text-sm text-blue-600 hover:underline whitespace-nowrap">ویرایش پروفایل</a>
+   </div>
+
+   <!-- اطلاعات آزمون -->
+   <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">اطلاعات آزمون</h2>
+      <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+         <div>
+            <dt class="text-gray-500">گروه آزمایشی</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.get_exam_group_display }}</dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">سال کنکور</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.exam_year }}</dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">سهمیه</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.get_quota_display }}</dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">رتبه کشوری</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.national_rank|default:"—" }}</dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">رتبه در سهمیه</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.rank_in_quota|default:"—" }}</dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">رتبه منطقه</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.rank_in_region|default:"—" }}</dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">تراز کل</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.total_score|default:"—" }}</dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">تراز آزمون</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.exam_score|default:"—" }}</dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">تراز نهایی</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.final_score|default:"—" }}</dd>
+         </div>
+      </dl>
+   </div>
+
+   <!-- بومی‌گزینی -->
+   <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">بومی‌گزینی</h2>
+      <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+         <div>
+            <dt class="text-gray-500">استان و شهر</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.province }}، {{ exam_profile.city }}</dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">ناحیه بومی</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.native_area|default:"—" }}</dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">قطب بومی</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.native_pole|default:"—" }}</dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">نوع گزینش رشته</dt>
+            <dd class="font-medium text-gray-900">{{ exam_profile.get_selection_type_display|default:"—" }}</dd>
+         </div>
+      </dl>
+   </div>
+
+   <!-- رشته‌های مورد علاقه و غیرقابل قبول -->
+   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
+         <h2 class="text-lg font-bold text-gray-900 mb-3">رشته‌های مورد علاقه</h2>
+         {% if interested_majors %}
+            <ul class="divide-y divide-gray-100 text-sm">
+               {% for major in interested_majors %}
+                  <li class="py-2 flex justify-between">
+                     <span>{{ major.major_name }}</span>
+                     <span class="text-gray-400">{{ major.interest_score }}/10</span>
+                  </li>
+               {% endfor %}
+            </ul>
+         {% else %}
+            <p class="text-sm text-gray-400">موردی ثبت نشده است.</p>
+         {% endif %}
+      </div>
+
+      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
+         <h2 class="text-lg font-bold text-gray-900 mb-3">رشته‌های غیرقابل قبول</h2>
+         {% if rejected_majors %}
+            <ul class="divide-y divide-gray-100 text-sm">
+               {% for major in rejected_majors %}
+                  <li class="py-2">{{ major.major_name }}</li>
+               {% endfor %}
+            </ul>
+         {% else %}
+            <p class="text-sm text-gray-400">موردی ثبت نشده است.</p>
+         {% endif %}
+      </div>
+   </div>
+
+   <!-- دوره‌های مورد قبول و مجاز بودن -->
+   <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">دوره‌های مورد قبول</h2>
+      {% if accepted_courses %}
+         <div class="flex flex-wrap gap-2">
+            {% for course in accepted_courses %}
+               <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-medium">
+                  {{ course.get_course_display }}
+               </span>
+            {% endfor %}
+         </div>
+      {% else %}
+         <p class="text-sm text-gray-400">موردی ثبت نشده است.</p>
+      {% endif %}
+   </div>
+
+   <!-- وزن معیارها -->
+   <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
+      <div class="flex items-center justify-between mb-4">
+         <h2 class="text-lg font-bold text-gray-900">وزن معیارهای انتخاب رشته</h2>
+         <a href="{% url 'exam:criterion_weights' %}" class="text-sm text-blue-600 hover:underline">ویرایش</a>
+      </div>
+
+      {% if criterion_weights %}
+         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+            <div>
+               <dt class="text-gray-500">علاقه به رشته</dt>
+               <dd class="font-medium text-gray-900">{{ criterion_weights.interest }}/10</dd>
+            </div>
+            <div>
+               <dt class="text-gray-500">اعتبار دانشگاه</dt>
+               <dd class="font-medium text-gray-900">{{ criterion_weights.university_reputation }}/10</dd>
+            </div>
+            <div>
+               <dt class="text-gray-500">کیفیت دانشکده</dt>
+               <dd class="font-medium text-gray-900">{{ criterion_weights.faculty_quality }}/10</dd>
+            </div>
+            <div>
+               <dt class="text-gray-500">بازار کار</dt>
+               <dd class="font-medium text-gray-900">{{ criterion_weights.job_market }}/10</dd>
+            </div>
+            <div>
+               <dt class="text-gray-500">پتانسیل درآمد</dt>
+               <dd class="font-medium text-gray-900">{{ criterion_weights.income_potential }}/10</dd>
+            </div>
+            <div>
+               <dt class="text-gray-500">امکان مهاجرت</dt>
+               <dd class="font-medium text-gray-900">{{ criterion_weights.immigration_potential }}/10</dd>
+            </div>
+            <div>
+               <dt class="text-gray-500">امکان هیئت علمی</dt>
+               <dd class="font-medium text-gray-900">{{ criterion_weights.academic_career }}/10</dd>
+            </div>
+         </div>
+      {% else %}
+         <p class="text-sm text-gray-400">هنوز وزنی تنظیم نکرده‌اید — مقادیر پیش‌فرض سیستم اعمال می‌شود.</p>
+      {% endif %}
+   </div>
+
+   <!-- توان مالی و محدودیت جغرافیایی -->
+   <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">توان مالی و محدودیت جغرافیایی</h2>
+      <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+         <div>
+            <dt class="text-gray-500">حداکثر شهریه سالانه</dt>
+            <dd class="font-medium text-gray-900">
+               {% if exam_profile.max_annual_tuition %}{{ exam_profile.max_annual_tuition }} تومان{% else %}بدون محدودیت{% endif %}
+            </dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">حداکثر فاصله قابل قبول</dt>
+            <dd class="font-medium text-gray-900">
+               {% if exam_profile.max_distance_km %}{{ exam_profile.max_distance_km }} کیلومتر{% else %}بدون محدودیت{% endif %}
+            </dd>
+         </div>
+         <div>
+            <dt class="text-gray-500">اهمیت فاصله جغرافیایی</dt>
+            <dd class="font-medium text-gray-900">
+               {% if exam_profile.geographic_distance_is_important %}دارد{% else %}ندارد{% endif %}
+            </dd>
+         </div>
+      </dl>
+   </div>
+
+   <!-- اقدامات بعدی -->
+   <div class="p-6 bg-blue-50 border border-blue-100 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-blue-800">
+         اطلاعات شما کامل به‌نظر می‌رسد. آماده‌اید تحلیل هوش مصنوعی را دریافت کنید؟
+      </p>
+      <a href="{% url 'ans_generate:generate' %}"
+         class="shrink-0 inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">
+         تولید تحلیل و پیشنهاد رشته
+      </a>
+   </div>
+
+</div>
+{% endblock %}

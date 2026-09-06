@@ -1,0 +1,60 @@
+{% comment %}
+مسیر پیشنهادی: report/templates/report/report.html
+{% endcomment %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>گزارش نهایی انتخاب رشته</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css"
+        rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-5" style="max-width: 800px;">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4 class="card-title mb-3">اطلاعات داوطلب</h4>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">نام: {{ exam_profile.full_name }}</li>
+                    <li class="list-group-item">
+                        گروه آزمایشی: {{ exam_profile.get_exam_group_display }}
+                    </li>
+                    <li class="list-group-item">
+                        سال کنکور: {{ exam_profile.exam_year }}
+                    </li>
+                    <li class="list-group-item">
+                        رتبه کشوری: {{ exam_profile.national_rank|default:"ثبت نشده" }}
+                    </li>
+                    <li class="list-group-item">
+                        سهمیه: {{ exam_profile.get_quota_display }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title mb-3">تحلیل و پیشنهاد هوش مصنوعی</h4>
+                <div style="white-space: pre-line;">{{ analysis.raw_response }}</div>
+                <p class="text-muted small mt-3 mb-0">
+                    تاریخ تولید: {{ analysis.updated_at }}
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'ans_generate:generate' %}" class="btn btn-outline-primary">
+                تولید مجدد تحلیل
+            </a>
+        </div>
+    </div>
+</body>
+</html>

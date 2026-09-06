@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}افزودن رشته غیرقابل قبول{% endblock %}
+
+{% block content %}
+<div class="p-4 sm:ml-4 max-w-lg">
+
+   <a href="{% url 'exam:exam_profile' %}" class="text-sm text-blue-600 hover:underline">← بازگشت به پروفایل</a>
+
+   <div class="mt-4 p-6 bg-white border border-gray-200 rounded-lg shadow">
+      <h1 class="text-xl font-bold text-gray-900 mb-1">افزودن رشته غیرقابل قبول</h1>
+      <p class="text-sm text-gray-500 mb-6">
+         نام رشته‌ای که تحت هیچ شرایطی نمی‌خواهید در پیشنهادها دیده شود را وارد کنید.
+      </p>
+
+      {% if form.non_field_errors %}
+         <div class="mb-4 p-3 rounded-lg text-sm bg-red-50 text-red-700 border border-red-200">
+            {{ form.non_field_errors }}
+         </div>
+      {% endif %}
+
+      <form method="post" class="space-y-4">
+         {% csrf_token %}
+
+         <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">{{ form.major_name.label }}</label>
+            {{ form.major_name }}
+            {% if form.major_name.errors %}
+               <p class="mt-1 text-xs text-red-600">{{ form.major_name.errors|join:" " }}</p>
+            {% endif %}
+         </div>
+
+         <button type="submit"
+            class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
+            افزودن به لیست غیرقابل قبول
+         </button>
+      </form>
+   </div>
+</div>
+{% endblock %}

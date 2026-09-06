@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}افزودن دوره مورد قبول{% endblock %}
+
+{% block content %}
+<div class="p-4 sm:ml-4 max-w-lg">
+
+   <a href="{% url 'exam:exam_profile' %}" class="text-sm text-blue-600 hover:underline">← بازگشت به پروفایل</a>
+
+   <div class="mt-4 p-6 bg-white border border-gray-200 rounded-lg shadow">
+      <h1 class="text-xl font-bold text-gray-900 mb-1">افزودن دوره مورد قبول</h1>
+      <p class="text-sm text-gray-500 mb-6">
+         دوره‌ی تحصیلی‌ای که حاضرید در آن پذیرفته شوید را انتخاب کنید.
+      </p>
+
+      <form method="post" class="space-y-4">
+         {% csrf_token %}
+
+         <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">دوره تحصیلی</label>
+            <select name="course" required
+               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                      focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+               {% for value, label in courses %}
+                  <option value="{{ value }}">{{ label }}</option>
+               {% endfor %}
+            </select>
+         </div>
+
+         <button type="submit"
+            class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+            افزودن دوره
+         </button>
+      </form>
+   </div>
+</div>
+{% endblock %}

@@ -2,35 +2,265 @@
 {% block title %}داشبورد مدیریتی{% endblock %}
 
 {% block content %}
-<div class="p-4 sm:ml-4">
-   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-      <!-- کارت شروع آزمون -->
-      <div class="flex items-center justify-between p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100">
-         <div>
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">آزمون جدید</h5>
-            <p class="font-normal text-gray-700">شروع فرآیند تست روانشناسی و انتخاب رشته.</p>
-         </div>
-         <a href="/exam/" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800">شروع آزمون</a>
-      </div>
+<div class="p-4 sm:ml-4 space-y-6">
 
-      <!-- کارت مشاهده نتایج -->
-      <div class="flex items-center justify-between p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100">
-         <div>
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">گزارش‌های من</h5>
-            <p class="font-normal text-gray-700">مشاهده تحلیل‌های قبلی و پیشنهادات رشته.</p>
-         </div>
-         <a href="/reports/" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700">مشاهده</a>
-      </div>
+   <!-- خوش‌آمدگویی -->
+   <div>
+      <h1 class="text-2xl font-bold text-gray-900">
+         سلام، {{ user.get_full_name|default:user.username }} 👋
+      </h1>
+      <p class="text-gray-500 mt-1">
+         این خلاصه‌ی وضعیت فعلی شما در سامانه‌ی انتخاب رشته است.
+      </p>
    </div>
 
-   <!-- بخش آمار یا راهنما -->
+   <!-- نوار مراحل (Stepper) -->
+   <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
+      <h2 class="text-sm font-semibold text-gray-500 mb-5">مسیر انتخاب رشته‌ی شما</h2>
+
+      <ol class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-0">
+
+         <!-- مرحله ۱: پروفایل حساب -->
+         <li class="flex-1 flex items-center gap-3">
+            <span class="flex items-center justify-center w-9 h-9 rounded-full shrink-0
+               {% if profile_completion == 100 %}bg-green-100 text-green-600{% else %}bg-blue-100 text-blue-600{% endif %}">
+               {% if profile_completion == 100 %}
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+               {% else %}
+                  <span class="text-sm font-bold">۱</span>
+               {% endif %}
+            </span>
+            <div>
+               <p class="text-sm font-medium text-gray-800">پروفایل حساب</p>
+               <p class="text-xs text-gray-500">{{ profile_completion }}٪ تکمیل</p>
+            </div>
+         </li>
+
+         <div class="hidden sm:block flex-1 h-px bg-gray-200 mx-2"></div>
+
+         <!-- مرحله ۲: پروفایل کنکور -->
+         <li class="flex-1 flex items-center gap-3">
+            <span class="flex items-center justify-center w-9 h-9 rounded-full shrink-0
+               {% if exam_completion == 100 %}bg-green-100 text-green-600{% elif exam_profile %}bg-blue-100 text-blue-600{% else %}bg-gray-100 text-gray-400{% endif %}">
+               {% if exam_completion == 100 %}
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+               {% else %}
+                  <span class="text-sm font-bold">۲</span>
+               {% endif %}
+            </span>
+            <div>
+               <p class="text-sm font-medium text-gray-800">پروفایل کنکور</p>
+               <p class="text-xs text-gray-500">
+                  {% if exam_profile %}{{ exam_completion }}٪ تکمیل{% else %}هنوز شروع نشده{% endif %}
+               </p>
+            </div>
+         </li>
+
+         <div class="hidden sm:block flex-1 h-px bg-gray-200 mx-2"></div>
+
+         <!-- مرحله ۳: علاقه‌ها و وزن معیارها -->
+         <li class="flex-1 flex items-center gap-3">
+            <span class="flex items-center justify-center w-9 h-9 rounded-full shrink-0
+               {% if has_criterion_weights and interested_majors_count > 0 %}bg-green-100 text-green-600{% elif exam_profile %}bg-blue-100 text-blue-600{% else %}bg-gray-100 text-gray-400{% endif %}">
+               {% if has_criterion_weights and interested_majors_count > 0 %}
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+               {% else %}
+                  <span class="text-sm font-bold">۳</span>
+               {% endif %}
+            </span>
+            <div>
+               <p class="text-sm font-medium text-gray-800">علاقه‌ها و وزن معیارها</p>
+               <p class="text-xs text-gray-500">
+                  {{ interested_majors_count }} رشته ثبت‌شده
+                  {% if has_criterion_weights %}· وزن‌دهی انجام شده{% endif %}
+               </p>
+            </div>
+         </li>
+
+         <div class="hidden sm:block flex-1 h-px bg-gray-200 mx-2"></div>
+
+         <!-- مرحله ۴: تحلیل هوش مصنوعی -->
+         <li class="flex-1 flex items-center gap-3">
+            <span class="flex items-center justify-center w-9 h-9 rounded-full shrink-0
+               {% if analysis.status == 'done' %}bg-green-100 text-green-600
+               {% elif analysis.status == 'failed' %}bg-red-100 text-red-500
+               {% elif analysis.status == 'pending' %}bg-amber-100 text-amber-600
+               {% else %}bg-gray-100 text-gray-400{% endif %}">
+               {% if analysis.status == 'done' %}
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+               {% else %}
+                  <span class="text-sm font-bold">۴</span>
+               {% endif %}
+            </span>
+            <div>
+               <p class="text-sm font-medium text-gray-800">تحلیل هوش مصنوعی</p>
+               <p class="text-xs text-gray-500">
+                  {% if analysis.status == 'done' %}آماده است
+                  {% elif analysis.status == 'pending' %}در حال پردازش
+                  {% elif analysis.status == 'failed' %}با خطا مواجه شد
+                  {% else %}هنوز تولید نشده{% endif %}
+               </p>
+            </div>
+         </li>
+
+      </ol>
+   </div>
+
+   <!-- کارت‌های آماری -->
+   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+      <div class="p-5 bg-white border border-gray-200 rounded-lg shadow">
+         <p class="text-sm text-gray-500 mb-2">پروفایل حساب کاربری</p>
+         <div class="flex items-end justify-between">
+            <span class="text-2xl font-bold text-gray-900">{{ profile_completion }}٪</span>
+            <div class="w-16 h-2 bg-gray-100 rounded-full overflow-hidden">
+               <div class="h-full bg-blue-600" style="width: {{ profile_completion }}%"></div>
+            </div>
+         </div>
+      </div>
+
+      <div class="p-5 bg-white border border-gray-200 rounded-lg shadow">
+         <p class="text-sm text-gray-500 mb-2">پروفایل کنکور</p>
+         <div class="flex items-end justify-between">
+            <span class="text-2xl font-bold text-gray-900">{{ exam_completion }}٪</span>
+            <div class="w-16 h-2 bg-gray-100 rounded-full overflow-hidden">
+               <div class="h-full bg-blue-600" style="width: {{ exam_completion }}%"></div>
+            </div>
+         </div>
+      </div>
+
+      <div class="p-5 bg-white border border-gray-200 rounded-lg shadow">
+         <p class="text-sm text-gray-500 mb-2">رشته‌های مورد علاقه</p>
+         <span class="text-2xl font-bold text-gray-900">{{ interested_majors_count }}</span>
+      </div>
+
+      <div class="p-5 bg-white border border-gray-200 rounded-lg shadow">
+         <p class="text-sm text-gray-500 mb-2">وضعیت تحلیل</p>
+         <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+            {% if analysis.status == 'done' %}bg-green-100 text-green-700
+            {% elif analysis.status == 'pending' %}bg-amber-100 text-amber-700
+            {% elif analysis.status == 'failed' %}bg-red-100 text-red-700
+            {% else %}bg-gray-100 text-gray-500{% endif %}">
+            {% if analysis.status == 'done' %}آماده
+            {% elif analysis.status == 'pending' %}در حال پردازش
+            {% elif analysis.status == 'failed' %}خطا
+            {% else %}تولید نشده{% endif %}
+         </span>
+      </div>
+
+   </div>
+
+   <!-- کارت‌های اقدام -->
+   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+      <!-- تکمیل پروفایل کنکور -->
+      <div class="flex items-center justify-between p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-50 transition">
+         <div>
+            <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900">پروفایل کنکور</h5>
+            <p class="font-normal text-gray-600 text-sm">
+               {% if exam_profile %}
+                  اطلاعات آزمون، بومی‌گزینی و رشته‌های مورد علاقه‌ی خود را ویرایش کنید.
+               {% else %}
+                  برای شروع، اطلاعات کنکور خود را وارد کنید.
+               {% endif %}
+            </p>
+         </div>
+         <a href="{% url 'exam:exam_profile' %}"
+            class="shrink-0 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+            {% if exam_profile %}ویرایش{% else %}شروع{% endif %}
+         </a>
+      </div>
+
+      <!-- وزن معیارها -->
+      <div class="flex items-center justify-between p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-50 transition">
+         <div>
+            <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900">وزن معیارهای انتخاب رشته</h5>
+            <p class="font-normal text-gray-600 text-sm">
+               اهمیت هر معیار (اعتبار دانشگاه، بازار کار، درآمد و ...) را تعیین کنید.
+            </p>
+         </div>
+         {% if exam_profile %}
+            <a href="{% url 'exam:criterion_weights' %}"
+               class="shrink-0 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
+               {% if has_criterion_weights %}ویرایش{% else %}تنظیم{% endif %}
+            </a>
+         {% else %}
+            <span class="shrink-0 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+               نیازمند پروفایل کنکور
+            </span>
+         {% endif %}
+      </div>
+
+      <!-- تولید تحلیل هوش مصنوعی -->
+      <div class="flex items-center justify-between p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-50 transition">
+         <div>
+            <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900">تحلیل هوش مصنوعی</h5>
+            <p class="font-normal text-gray-600 text-sm">
+               {% if analysis.status == 'done' %}
+                  تحلیل شما آماده است. می‌توانید دوباره آن را تولید کنید.
+               {% elif analysis.status == 'pending' %}
+                  تحلیل شما در حال پردازش است.
+               {% elif analysis.status == 'failed' %}
+                  تولید تحلیل قبلی با خطا مواجه شد. دوباره تلاش کنید.
+               {% else %}
+                  بر اساس اطلاعات کنکور، بهترین کدرشته‌محل‌ها را دریافت کنید.
+               {% endif %}
+            </p>
+         </div>
+         {% if exam_profile %}
+            <a href="{% url 'ans_generate:generate' %}"
+               class="shrink-0 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700">
+               {% if analysis.status == 'done' %}تولید مجدد
+               {% elif analysis.status == 'pending' %}پیگیری وضعیت
+               {% else %}شروع تحلیل{% endif %}
+            </a>
+         {% else %}
+            <span class="shrink-0 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+               نیازمند پروفایل کنکور
+            </span>
+         {% endif %}
+      </div>
+
+      <!-- مشاهده گزارش نهایی -->
+      <div class="flex items-center justify-between p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-50 transition">
+         <div>
+            <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900">گزارش نهایی</h5>
+            <p class="font-normal text-gray-600 text-sm">
+               لیست کامل کدرشته‌محل‌های پیشنهادی به‌همراه تحلیل استراتژیک.
+            </p>
+         </div>
+         {% if analysis.status == 'done' %}
+            <a href="{% url 'report:view_report' %}"
+               class="shrink-0 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700">
+               مشاهده
+            </a>
+         {% else %}
+            <span class="shrink-0 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+               هنوز آماده نیست
+            </span>
+         {% endif %}
+      </div>
+
+   </div>
+
+   <!-- راهنمای سامانه -->
    <div class="p-8 bg-white border border-gray-200 rounded-lg shadow">
-      <h2 class="text-xl font-bold mb-4">راهنمای سامانه</h2>
-      <ul class="list-disc pr-5 text-gray-600">
-         <li>ابتدا آزمون رغبت‌سنجی را کامل کنید.</li>
-         <li>پس از اتمام، سیستم به صورت هوشمند نتایج را تحلیل می‌کند.</li>
-         <li>در بخش گزارش‌ها، لیست رشته‌های پیشنهادی را دانلود کنید.</li>
+      <h2 class="text-xl font-bold mb-4 text-gray-900">راهنمای سامانه</h2>
+      <ul class="list-disc pr-5 text-gray-600 space-y-1 text-sm">
+         <li>ابتدا پروفایل حساب کاربری و سپس پروفایل کنکور خود را کامل کنید.</li>
+         <li>رشته‌های مورد علاقه و غیرقابل قبول و وزن معیارهای تصمیم‌گیری را ثبت کنید.</li>
+         <li>از بخش «تحلیل هوش مصنوعی»، لیست بهینه‌ی کدرشته‌محل‌ها را تولید کنید.</li>
+         <li>در بخش «گزارش نهایی»، جدول کامل پیشنهادها و تحلیل استراتژیک را مشاهده کنید.</li>
       </ul>
    </div>
+
 </div>
 {% endblock %}

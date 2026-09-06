@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from accounts.models import Profile
+from ans_generate.models import GeneratedAnalysis
+from exam.models import StudentExamProfile
 
 
 @login_required
@@ -36,27 +38,55 @@ def dashboard_view(request):
                 (completed_fields / total_fields) * 100
             )
 
+    exam_profile = StudentExamProfile.objects.filter(
+        user=user
+    ).first()
 
-    exam_data = None
     exam_completion = 0
+    interested_majors_count = 0
+    has_criterion_weights = False
 
-    latest_analysis = None
-    analysis_count = 0
+    if exam_profile:
+        exam_fields = [
+            exam_profile.full_name,
+            exam_profile.gender,
+            exam_profile.exam_group,
+            exam_profile.exam_year,
+            exam_profile.province,
+            exam_profile.city,
+            exam_profile.quota,
+            exam_profile.national_rank,
+            exam_profile.final_score,
+        ]
 
-    reports_count = 0
+        completed_fields = sum(
+            1 for field in exam_fields
+            if field not in (None, "")
+        )
+
+        exam_completion = round(
+            (completed_fields / len(exam_fields)) * 100
+        )
+
+        interested_majors_count = exam_profile.interested_majors.count()
+        has_criterion_weights = bool(
+            getattr(exam_profile, "criterion_weights", None)
+        )
+
+    analysis = GeneratedAnalysis.objects.filter(
+        user=user
+    ).first()
 
     context = {
         "profile": profile,
-
         "profile_completion": profile_completion,
 
-        "exam_data": exam_data,
+        "exam_profile": exam_profile,
         "exam_completion": exam_completion,
+        "interested_majors_count": interested_majors_count,
+        "has_criterion_weights": has_criterion_weights,
 
-        "latest_analysis": latest_analysis,
-        "analysis_count": analysis_count,
-
-        "reports_count": reports_count,
+        "analysis": analysis,
     }
 
     return render(
