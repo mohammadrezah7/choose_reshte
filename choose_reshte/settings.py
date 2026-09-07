@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+from dotenv import load_dotenv
+load_dotenv()
 from pathlib import Path
 import os
 
@@ -135,11 +136,18 @@ LOGOUT_REDIRECT_URL = 'login'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AI_PROVIDER = os.environ.get("AI_PROVIDER", "openai")
+AI_MAX_TOKENS = int(os.environ.get("AI_MAX_TOKENS", "6000"))
+AI_TEMPERATURE = float(os.environ.get("AI_TEMPERATURE", "0.3"))
  
+
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
-OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
  
-# در صورتی که بعداً خواستید به Anthropic هم سوییچ کنید، کد از آن هم
-# پشتیبانی می‌کند (کافی است AI_PROVIDER="anthropic" و ANTHROPIC_API_KEY را ست کنید).
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
-ANTHROPIC_MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-5")
+
+OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://openrouter.ai/api/v1")
+ 
+
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "openai/gpt-4o-mini")
+ 
+
+OPENROUTER_SITE_URL = os.environ.get("OPENROUTER_SITE_URL", "")
+OPENROUTER_SITE_NAME = os.environ.get("OPENROUTER_SITE_NAME", "choose_reshte")

@@ -35,7 +35,7 @@ def view_report(request):
 
     return render(
         request,
-        "report/report.html",
+        "reports/reports.html",
         {
             "exam_profile": exam_profile,
             "analysis": analysis,
