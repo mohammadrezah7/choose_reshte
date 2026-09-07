@@ -44,6 +44,39 @@ class StudentExamProfile(models.Model):
         NOT_ALLOWED = "not_allowed", "غیرمجاز"
         UNKNOWN = "unknown", "نامشخص"
 
+    class Province(models.TextChoices):
+        AZ_EAST = "آذربایجان شرقی", "آذربایجان شرقی"
+        AZ_WEST = "آذربایجان غربی", "آذربایجان غربی"
+        ARDEBIL = "اردبیل", "اردبیل"
+        ISFAHAN = "اصفهان", "اصفهان"
+        ALBORZ = "البرز", "البرز"
+        ILAM = "ایلام", "ایلام"
+        BUSHEHR = "بوشهر", "بوشهر"
+        TEHRAN = "تهران", "تهران"
+        CHB = "چهارمحال و بختیاری", "چهارمحال و بختیاری"
+        SKH = "خراسان جنوبی", "خراسان جنوبی"
+        RKH = "خراسان رضوی", "خراسان رضوی"
+        NKH = "خراسان شمالی", "خراسان شمالی"
+        KHUZESTAN = "خوزستان", "خوزستان"
+        ZANJAN = "زنجان", "زنجان"
+        SEMNAN = "سمنان", "سمنان"
+        SISTAN = "سیستان و بلوچستان", "سیستان و بلوچستان"
+        FARS = "فارس", "فارس"
+        QAZVIN = "قزوین", "قزوین"
+        QOM = "قم", "قم"
+        KURDISTAN = "کردستان", "کردستان"
+        KERMAN = "کرمان", "کرمان"
+        KERMANSHAH = "کرمانشاه", "کرمانشاه"
+        KOHGILUYEH = "کهگیلویه و بویراحمد", "کهگیلویه و بویراحمد"
+        GOLESTAN = "گلستان", "گلستان"
+        GILAN = "گیلان", "گیلان"
+        LORESTAN = "لرستان", "لرستان"
+        MAZANDARAN = "مازندران", "مازندران"
+        MARKAZI = "مرکزی", "مرکزی"
+        HORMOZGAN = "هرمزگان", "هرمزگان"
+        HAMEDAN = "همدان", "همدان"
+        YAZD = "یزد", "یزد"
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -74,6 +107,7 @@ class StudentExamProfile(models.Model):
 
     province = models.CharField(
         max_length=100,
+        choices=Province.choices,
         verbose_name="استان محل سکونت",
     )
 
