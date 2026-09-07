@@ -1,278 +1,545 @@
 {% extends 'base.html' %}
-{% block title %}پروفایل انتخاب رشته{% endblock %}
+{% block title %}پروفایل انتخاب رشته | پنل هوشمند{% endblock %}
 
 {% block content %}
-<div class="p-4 sm:ml-4 space-y-6 max-w-4xl">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-   <div>
-      <h1 class="text-2xl font-bold text-gray-900">پروفایل انتخاب رشته</h1>
-      <p class="text-gray-500 mt-1">
-         اطلاعات زیر پایه‌ی محاسبات تحلیل هوش مصنوعی است — هرچه دقیق‌تر باشد، پیشنهادها بهتر خواهند بود.
-      </p>
-   </div>
+<style>
+    * {
+        font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
 
-   {% if messages %}
-      {% for message in messages %}
-         <div class="p-3 rounded-lg text-sm bg-blue-50 text-blue-700 border border-blue-200">
-            {{ message }}
-         </div>
-      {% endfor %}
-   {% endif %}
+    body {
+        background-color: #05080f !important;
+        color: #f3f4f6;
+    }
 
-   {% if form.non_field_errors %}
-      <div class="p-3 rounded-lg text-sm bg-red-50 text-red-700 border border-red-200">
-         {{ form.non_field_errors }}
-      </div>
-   {% endif %}
+    /* ===== پس‌زمینه گرید هاشور نئونی ===== */
+    .grid-hatch {
+        background-image:
+            linear-gradient(rgba(99, 102, 241, 0.07) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(99, 102, 241, 0.07) 1px, transparent 1px),
+            radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 44px 44px, 44px 44px, 28px 28px;
+    }
 
-   <form method="post" class="space-y-6">
-      {% csrf_token %}
+    /* کارت شیشه‌ای */
+    .card-glass {
+        background: linear-gradient(180deg, rgba(20, 28, 48, 0.65) 0%, rgba(8, 12, 24, 0.85) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        box-shadow: 0 15px 40px -15px rgba(0, 0, 0, 0.8);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-glass:hover {
+        border-color: rgba(99, 102, 241, 0.35);
+        box-shadow: 0 0 25px -8px rgba(99, 102, 241, 0.2), 0 15px 40px -15px rgba(0, 0, 0, 0.8);
+    }
 
-      <!-- اطلاعات فردی و آزمون -->
-      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
-         <h2 class="text-lg font-bold text-gray-900 mb-4">اطلاعات فردی و آزمون</h2>
-         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {% for f in form %}
-               {% if f.name in "full_name,gender,exam_group,exam_year" %}
-                  <div>
-                     <label class="block mb-1 text-sm font-medium text-gray-700">{{ f.label }}</label>
-                     {{ f }}
-                     {% if f.errors %}
-                        <p class="mt-1 text-xs text-red-600">{{ f.errors|join:" " }}</p>
-                     {% endif %}
-                  </div>
-               {% endif %}
-            {% endfor %}
-         </div>
-      </div>
+    /* نور و افکت پس‌زمینه */
+    @keyframes pulseGlow {
+        0%, 100% { opacity: 0.25; transform: scale(1); }
+        50% { opacity: 0.45; transform: scale(1.08); }
+    }
+    .aurora-glow {
+        animation: pulseGlow 9s ease-in-out infinite alternate;
+    }
 
-      <!-- سهمیه و بومی‌گزینی -->
-      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
-         <h2 class="text-lg font-bold text-gray-900 mb-4">سهمیه و بومی‌گزینی</h2>
-         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {% for f in form %}
-               {% if f.name in "province,city,quota,region,native_area,native_pole,selection_type" %}
-                  <div>
-                     <label class="block mb-1 text-sm font-medium text-gray-700">{{ f.label }}</label>
-                     {{ f }}
-                     {% if f.errors %}
-                        <p class="mt-1 text-xs text-red-600">{{ f.errors|join:" " }}</p>
-                     {% endif %}
-                  </div>
-               {% endif %}
-            {% endfor %}
-         </div>
-      </div>
+    /* استایل المان‌های فرم و ورودی‌ها */
+    input[type="text"], input[type="number"], input[type="email"], select, textarea {
+        background-color: rgba(13, 19, 36, 0.75) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        color: #f8fafc !important;
+        border-radius: 0.75rem !important;
+        padding: 0.65rem 0.9rem !important;
+        font-size: 0.875rem !important;
+        width: 100% !important;
+        transition: all 0.25s ease !important;
+        outline: none !important;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, input[type="email"]:focus, select:focus, textarea:focus {
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), 0 0 15px rgba(99, 102, 241, 0.3) !important;
+        background-color: rgba(18, 26, 48, 0.9) !important;
+    }
+    select option {
+        background-color: #0d1324 !important;
+        color: #f8fafc !important;
+    }
 
-      <!-- رتبه و تراز -->
-      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
-         <h2 class="text-lg font-bold text-gray-900 mb-4">رتبه و تراز</h2>
-         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {% for f in form %}
-               {% if f.name in "rank_in_quota,rank_in_region,national_rank,total_score,exam_score,academic_record_score,final_score" %}
-                  <div>
-                     <label class="block mb-1 text-sm font-medium text-gray-700">{{ f.label }}</label>
-                     {{ f }}
-                     {% if f.errors %}
-                        <p class="mt-1 text-xs text-red-600">{{ f.errors|join:" " }}</p>
-                     {% endif %}
-                  </div>
-               {% endif %}
-            {% endfor %}
-         </div>
-      </div>
+    /* چک‌باکس‌ها */
+    input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 1.2rem;
+        height: 1.2rem;
+        border-radius: 0.375rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background-color: rgba(13, 19, 36, 0.8);
+        cursor: pointer;
+        position: relative;
+        display: inline-grid;
+        place-content: center;
+        transition: all 0.2s ease;
+    }
+    input[type="checkbox"]:checked {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        border-color: #6366f1;
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    }
+    input[type="checkbox"]:checked::before {
+        content: "";
+        width: 0.55rem;
+        height: 0.3rem;
+        border-left: 2px solid white;
+        border-bottom: 2px solid white;
+        transform: rotate(-45deg) translate(1px, -1px);
+    }
 
-      <!-- دوره‌های مجاز -->
-      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
-         <h2 class="text-lg font-bold text-gray-900 mb-4">وضعیت مجاز بودن دوره‌ها</h2>
-         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {% for f in form %}
-               {% if f.name in "allowed_daytime,allowed_night,allowed_campus,allowed_azad,allowed_payame_noor,allowed_non_profit,allowed_other" %}
-                  <div>
-                     <label class="block mb-1 text-sm font-medium text-gray-700">{{ f.label }}</label>
-                     {{ f }}
-                  </div>
-               {% endif %}
-            {% endfor %}
-         </div>
-         <div class="mt-4 flex items-center gap-2">
-            {{ form.only_declared_majors }}
-            <label class="text-sm text-gray-700">{{ form.only_declared_majors.label }}</label>
-         </div>
-      </div>
+    /* دکمه‌های نئونی */
+    .btn-neon {
+        transition: all 0.3s ease;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    .btn-neon:hover {
+        transform: translateY(-2px);
+    }
+    .btn-blue   { background: linear-gradient(135deg, #2563eb, #4f46e5); box-shadow: 0 0 20px rgba(59, 130, 246, 0.35); }
+    .btn-purple { background: linear-gradient(135deg, #7c3aed, #ec4899); box-shadow: 0 0 20px rgba(168, 85, 247, 0.35); }
+    .btn-emerald{ background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 0 20px rgba(16, 185, 129, 0.35); }
+    
+    .btn-outline {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #cbd5e1;
+        transition: all 0.25s ease;
+    }
+    .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(99, 102, 241, 0.5);
+        color: #fff;
+        transform: translateY(-2px);
+    }
 
-      <!-- توان مالی -->
-      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
-         <h2 class="text-lg font-bold text-gray-900 mb-4">توان مالی</h2>
-         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div>
-               <label class="block mb-1 text-sm font-medium text-gray-700">{{ form.max_annual_tuition.label }}</label>
-               {{ form.max_annual_tuition }}
+    /* عنوان‌های گرادیانی */
+    .stat-number {
+        background: linear-gradient(135deg, #a5b4fc, #f0abfc);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    /* بج‌ها و آیتم‌های لیست تکمیلی */
+    .list-item-glow {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.2s ease;
+    }
+    .list-item-glow:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(99, 102, 241, 0.2);
+    }
+</style>
+
+<!-- پس‌زمینه نئونی ثابت -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#05080f]">
+    <div class="grid-hatch absolute inset-0"></div>
+    <div class="aurora-glow absolute -top-40 -right-32 h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-[140px]"></div>
+    <div class="aurora-glow absolute top-1/2 -left-40 h-[450px] w-[450px] rounded-full bg-pink-600/15 blur-[140px]" style="animation-delay: -4s;"></div>
+    <div class="aurora-glow absolute -bottom-40 left-1/3 h-[400px] w-[400px] rounded-full bg-purple-600/20 blur-[130px]" style="animation-delay: -6s;"></div>
+</div>
+
+<div class="relative z-10 p-4 sm:p-6 lg:p-8 space-y-6 max-w-5xl mx-auto">
+
+    <!-- هدر صفحه -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
+        <div>
+            <h1 class="text-2xl font-black tracking-tight">
+                <span class="stat-number">پروفایل انتخاب رشته</span> 🎓
+            </h1>
+            <p class="text-slate-400 mt-1 text-xs sm:text-sm">
+                اطلاعات زیر پایه‌ی محاسبات هوش مصنوعی است — هرچه دقیق‌تر باشد، پیشنهادها واقع‌بینانه‌تر خواهند بود.
+            </p>
+        </div>
+        <a href="{% url 'dashboard' %}" class="btn-outline self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold">
+            <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+            داشبورد
+        </a>
+    </div>
+
+    <!-- پیام‌ها -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="p-4 rounded-2xl text-xs sm:text-sm bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex items-center gap-3 backdrop-blur-md">
+                <svg class="w-5 h-5 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>{{ message }}</span>
             </div>
-         </div>
-         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {% for f in form %}
-               {% if f.name in "can_pay_night,can_pay_campus,can_pay_azad,can_pay_payame_noor,can_pay_non_profit" %}
-                  <div class="flex items-center gap-2">
-                     {{ f }}
-                     <label class="text-sm text-gray-700">{{ f.label }}</label>
-                  </div>
-               {% endif %}
-            {% endfor %}
-         </div>
-      </div>
+        {% endfor %}
+    {% endif %}
 
-      <!-- محدودیت جغرافیایی -->
-      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
-         <h2 class="text-lg font-bold text-gray-900 mb-4">محدودیت جغرافیایی</h2>
-         <div class="flex items-center gap-2 mb-4">
-            {{ form.geographic_distance_is_important }}
-            <label class="text-sm text-gray-700">{{ form.geographic_distance_is_important.label }}</label>
-         </div>
-         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-               <label class="block mb-1 text-sm font-medium text-gray-700">{{ form.max_distance_km.label }}</label>
-               {{ form.max_distance_km }}
+    {% if form.non_field_errors %}
+        <div class="p-4 rounded-2xl text-xs sm:text-sm bg-rose-500/10 border border-rose-500/30 text-rose-300 backdrop-blur-md">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- بخش ۱: اطلاعات فردی و آزمون -->
+        <div class="card-glass rounded-3xl p-6 sm:p-7">
+            <div class="flex items-center gap-3 mb-6 pb-3 border-b border-white/5">
+                <div class="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/25 text-blue-400 flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </div>
+                <h2 class="text-base font-bold text-white">اطلاعات فردی و آزمون</h2>
             </div>
-         </div>
-         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-            {% for f in form %}
-               {% if f.name in "accepted_provinces,rejected_provinces,preferred_cities,rejected_cities" %}
-                  <div>
-                     <label class="block mb-1 text-sm font-medium text-gray-700">{{ f.label }}</label>
-                     {{ f }}
-                  </div>
-               {% endif %}
-            {% endfor %}
-         </div>
-      </div>
-
-      <button type="submit"
-         class="w-full sm:w-auto inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800">
-         ذخیره پروفایل
-      </button>
-   </form>
-
-   {% if exam_profile %}
-      <!-- هاب مدیریت اطلاعات تکمیلی -->
-      <div class="pt-4">
-         <h2 class="text-xl font-bold text-gray-900 mb-4">اطلاعات تکمیلی</h2>
-
-         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-            <!-- رشته‌های مورد علاقه -->
-            <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
-               <div class="flex items-center justify-between mb-3">
-                  <h3 class="font-bold text-gray-900">رشته‌های مورد علاقه</h3>
-                  <a href="{% url 'exam:interested_major_add' %}"
-                     class="text-sm text-blue-600 hover:underline">افزودن +</a>
-               </div>
-               {% with majors=exam_profile.interested_majors.all %}
-                  {% if majors %}
-                     <ul class="divide-y divide-gray-100">
-                        {% for major in majors %}
-                           <li class="py-2 flex items-center justify-between text-sm">
-                              <span>{{ major.major_name }} <span class="text-gray-400">({{ major.interest_score }}/10)</span></span>
-                              <form method="post" action="{% url 'exam:interested_major_delete' major.pk %}"
-                                 onsubmit="return confirm('حذف شود؟');">
-                                 {% csrf_token %}
-                                 <button type="submit" class="text-red-500 hover:underline text-xs">حذف</button>
-                              </form>
-                           </li>
-                        {% endfor %}
-                     </ul>
-                  {% else %}
-                     <p class="text-sm text-gray-400">هنوز رشته‌ای اضافه نکرده‌اید.</p>
-                  {% endif %}
-               {% endwith %}
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {% for f in form %}
+                    {% if f.name in "full_name,gender,exam_group,exam_year" %}
+                        <div>
+                            <label class="block mb-2 text-xs font-semibold text-slate-300">{{ f.label }}</label>
+                            {{ f }}
+                            {% if f.errors %}
+                                <p class="mt-1.5 text-xs text-rose-400">{{ f.errors|join:" " }}</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </div>
+        </div>
 
-            <!-- رشته‌های غیرقابل قبول -->
-            <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
-               <div class="flex items-center justify-between mb-3">
-                  <h3 class="font-bold text-gray-900">رشته‌های غیرقابل قبول</h3>
-                  <a href="{% url 'exam:rejected_major_add' %}"
-                     class="text-sm text-blue-600 hover:underline">افزودن +</a>
-               </div>
-               {% with majors=exam_profile.rejected_majors.all %}
-                  {% if majors %}
-                     <ul class="divide-y divide-gray-100">
-                        {% for major in majors %}
-                           <li class="py-2 flex items-center justify-between text-sm">
-                              <span>{{ major.major_name }}</span>
-                              <form method="post" action="{% url 'exam:rejected_major_delete' major.pk %}"
-                                 onsubmit="return confirm('حذف شود؟');">
-                                 {% csrf_token %}
-                                 <button type="submit" class="text-red-500 hover:underline text-xs">حذف</button>
-                              </form>
-                           </li>
-                        {% endfor %}
-                     </ul>
-                  {% else %}
-                     <p class="text-sm text-gray-400">موردی ثبت نشده است.</p>
-                  {% endif %}
-               {% endwith %}
-            </div>
-
-            <!-- دوره‌های مورد قبول -->
-            <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
-               <div class="flex items-center justify-between mb-3">
-                  <h3 class="font-bold text-gray-900">دوره‌های مورد قبول</h3>
-                  <a href="{% url 'exam:accepted_course_add' %}"
-                     class="text-sm text-blue-600 hover:underline">افزودن +</a>
-               </div>
-               {% with courses=exam_profile.accepted_courses.all %}
-                  {% if courses %}
-                     <ul class="divide-y divide-gray-100">
-                        {% for course in courses %}
-                           <li class="py-2 flex items-center justify-between text-sm">
-                              <span>{{ course.get_course_display }}</span>
-                              <form method="post" action="{% url 'exam:accepted_course_delete' course.pk %}"
-                                 onsubmit="return confirm('حذف شود؟');">
-                                 {% csrf_token %}
-                                 <button type="submit" class="text-red-500 hover:underline text-xs">حذف</button>
-                              </form>
-                           </li>
-                        {% endfor %}
-                     </ul>
-                  {% else %}
-                     <p class="text-sm text-gray-400">موردی ثبت نشده است.</p>
-                  {% endif %}
-               {% endwith %}
+        <!-- بخش ۲: سهمیه و بومی‌گزینی -->
+        <div class="card-glass rounded-3xl p-6 sm:p-7">
+            <div class="flex items-center gap-3 mb-6 pb-3 border-b border-white/5">
+                <div class="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-base font-bold text-white">سهمیه و بومی‌گزینی</h2>
             </div>
 
-            <!-- وزن معیارها -->
-            <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
-               <div class="flex items-center justify-between mb-3">
-                  <h3 class="font-bold text-gray-900">وزن معیارهای انتخاب رشته</h3>
-                  <a href="{% url 'exam:criterion_weights' %}"
-                     class="text-sm text-blue-600 hover:underline">
-                     {% if exam_profile.criterion_weights %}ویرایش{% else %}تنظیم{% endif %}
-                  </a>
-               </div>
-               {% if exam_profile.criterion_weights %}
-                  <p class="text-sm text-gray-500">وزن معیارها ثبت شده است.</p>
-               {% else %}
-                  <p class="text-sm text-gray-400">هنوز وزنی تنظیم نکرده‌اید (مقادیر پیش‌فرض اعمال می‌شود).</p>
-               {% endif %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {% for f in form %}
+                    {% if f.name in "province,city,quota,region,native_area,native_pole,selection_type" %}
+                        <div>
+                            <label class="block mb-2 text-xs font-semibold text-slate-300">{{ f.label }}</label>
+                            {{ f }}
+                            {% if f.errors %}
+                                <p class="mt-1.5 text-xs text-rose-400">{{ f.errors|join:" " }}</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- بخش ۳: رتبه و تراز -->
+        <div class="card-glass rounded-3xl p-6 sm:p-7">
+            <div class="flex items-center gap-3 mb-6 pb-3 border-b border-white/5">
+                <div class="w-8 h-8 rounded-xl bg-pink-500/10 border border-pink-500/25 text-pink-400 flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <h2 class="text-base font-bold text-white">رتبه و تراز کارنامه</h2>
             </div>
 
-         </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {% for f in form %}
+                    {% if f.name in "rank_in_quota,rank_in_region,national_rank,total_score,exam_score,academic_record_score,final_score" %}
+                        <div>
+                            <label class="block mb-2 text-xs font-semibold text-slate-300">{{ f.label }}</label>
+                            {{ f }}
+                            {% if f.errors %}
+                                <p class="mt-1.5 text-xs text-rose-400">{{ f.errors|join:" " }}</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
 
-         <div class="mt-6 text-center">
-            <a href="{% url 'exam:summary' %}"
-               class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 border border-blue-700 rounded-lg hover:bg-blue-50">
-              تائید نهایی اطلاعات پروفایل
-            </a>
-         </div>
-         <div class="mt-6 text-center">
-            <a href="{% url 'dashboard' %}"
-               class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 border border-blue-700 rounded-lg hover:bg-blue-50">
-              بازگشت
-            </a>
-         </div>
-      </div>
-   {% endif %}
+        <!-- بخش ۴: وضعیت مجاز بودن دوره‌ها -->
+        <div class="card-glass rounded-3xl p-6 sm:p-7">
+            <div class="flex items-center gap-3 mb-6 pb-3 border-b border-white/5">
+                <div class="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/25 text-purple-400 flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-base font-bold text-white">وضعیت مجاز بودن دوره‌ها در کارنامه</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for f in form %}
+                    {% if f.name in "allowed_daytime,allowed_night,allowed_campus,allowed_azad,allowed_payame_noor,allowed_non_profit,allowed_other" %}
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-indigo-500/30 transition-colors">
+                            {{ f }}
+                            <label class="text-xs font-medium text-slate-300 cursor-pointer select-none">{{ f.label }}</label>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            {% if form.only_declared_majors %}
+            <div class="mt-5 pt-4 border-t border-white/5 flex items-center gap-3">
+                {{ form.only_declared_majors }}
+                <label class="text-xs font-semibold text-indigo-300 cursor-pointer select-none">{{ form.only_declared_majors.label }}</label>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- بخش ۵: توان مالی -->
+        <div class="card-glass rounded-3xl p-6 sm:p-7">
+            <div class="flex items-center gap-3 mb-6 pb-3 border-b border-white/5">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-base font-bold text-white">توان مالی و پرداخت شهریه</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                <div>
+                    <label class="block mb-2 text-xs font-semibold text-slate-300">{{ form.max_annual_tuition.label }}</label>
+                    {{ form.max_annual_tuition }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for f in form %}
+                    {% if f.name in "can_pay_night,can_pay_campus,can_pay_azad,can_pay_payame_noor,can_pay_non_profit" %}
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-emerald-500/30 transition-colors">
+                            {{ f }}
+                            <label class="text-xs font-medium text-slate-300 cursor-pointer select-none">{{ f.label }}</label>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- بخش ۶: محدودیت جغرافیایی -->
+        <div class="card-glass rounded-3xl p-6 sm:p-7">
+            <div class="flex items-center gap-3 mb-6 pb-3 border-b border-white/5">
+                <div class="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-400 flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-base font-bold text-white">محدودیت‌های جغرافیایی</h2>
+            </div>
+
+            <div class="flex items-center gap-3 mb-5 p-3 rounded-2xl bg-white/[0.02] border border-white/5">
+                {{ form.geographic_distance_is_important }}
+                <label class="text-xs font-semibold text-slate-200 cursor-pointer select-none">{{ form.geographic_distance_is_important.label }}</label>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                <div>
+                    <label class="block mb-2 text-xs font-semibold text-slate-300">{{ form.max_distance_km.label }}</label>
+                    {{ form.max_distance_km }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {% for f in form %}
+                    {% if f.name in "accepted_provinces,rejected_provinces,preferred_cities,rejected_cities" %}
+                        <div>
+                            <label class="block mb-2 text-xs font-semibold text-slate-300">{{ f.label }}</label>
+                            {{ f }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- دکمه ذخیره -->
+        <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="submit"
+               class="btn-neon btn-blue inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-bold text-white rounded-2xl w-full sm:w-auto shadow-lg">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                ذخیره اطلاعات پروفایل
+            </button>
+        </div>
+    </form>
+
+    {% if exam_profile %}
+        <!-- بخش اطلاعات تکمیلی (رشته‌ها، دوره‌ها و وزن‌ها) -->
+        <div class="pt-8 space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-black text-white">اطلاعات تکمیلی و علایق</h2>
+                    <p class="text-slate-400 text-xs mt-1">مدیریت علاقه‌مندی‌ها و فیلترهای استراتژیک برای هوش مصنوعی</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+                <!-- رشته‌های مورد علاقه -->
+                <div class="card-glass rounded-3xl p-6">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_8px_#ec4899]"></span>
+                            رشته‌های مورد علاقه
+                        </h3>
+                        <a href="{% url 'exam:interested_major_add' %}"
+                           class="text-xs font-bold text-pink-400 hover:text-pink-300 flex items-center gap-1 transition-colors">
+                            افزودن +
+                        </a>
+                    </div>
+                    {% with majors=exam_profile.interested_majors.all %}
+                        {% if majors %}
+                            <ul class="space-y-2">
+                                {% for major in majors %}
+                                    <li class="list-item-glow p-3 rounded-xl flex items-center justify-between text-xs">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-slate-200 font-medium">{{ major.major_name }}</span>
+                                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-300 border border-pink-500/20">{{ major.interest_score }}/10</span>
+                                        </div>
+                                        <form method="post" action="{% url 'exam:interested_major_delete' major.pk %}"
+                                            onsubmit="return confirm('آیا از حذف این رشته اطمینان دارید؟');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="text-rose-400 hover:text-rose-300 text-xs font-medium transition-colors">حذف</button>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-xs text-slate-500 py-3 text-center">هنوز رشته‌ای اضافه نکرده‌اید.</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <!-- رشته‌های غیرقابل قبول -->
+                <div class="card-glass rounded-3xl p-6">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_#f43f5e]"></span>
+                            رشته‌های غیرقابل قبول
+                        </h3>
+                        <a href="{% url 'exam:rejected_major_add' %}"
+                           class="text-xs font-bold text-rose-400 hover:text-rose-300 flex items-center gap-1 transition-colors">
+                            افزودن +
+                        </a>
+                    </div>
+                    {% with majors=exam_profile.rejected_majors.all %}
+                        {% if majors %}
+                            <ul class="space-y-2">
+                                {% for major in majors %}
+                                    <li class="list-item-glow p-3 rounded-xl flex items-center justify-between text-xs">
+                                        <span class="text-slate-200 font-medium">{{ major.major_name }}</span>
+                                        <form method="post" action="{% url 'exam:rejected_major_delete' major.pk %}"
+                                            onsubmit="return confirm('آیا از حذف اطمینان دارید؟');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="text-rose-400 hover:text-rose-300 text-xs font-medium transition-colors">حذف</button>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-xs text-slate-500 py-3 text-center">موردی ثبت نشده است.</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <!-- دوره‌های مورد قبول -->
+                <div class="card-glass rounded-3xl p-6">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_#6366f1]"></span>
+                            دوره‌های مورد قبول
+                        </h3>
+                        <a href="{% url 'exam:accepted_course_add' %}"
+                           class="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors">
+                            افزودن +
+                        </a>
+                    </div>
+                    {% with courses=exam_profile.accepted_courses.all %}
+                        {% if courses %}
+                            <ul class="space-y-2">
+                                {% for course in courses %}
+                                    <li class="list-item-glow p-3 rounded-xl flex items-center justify-between text-xs">
+                                        <span class="text-slate-200 font-medium">{{ course.get_course_display }}</span>
+                                        <form method="post" action="{% url 'exam:accepted_course_delete' course.pk %}"
+                                            onsubmit="return confirm('آیا از حذف اطمینان دارید؟');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="text-rose-400 hover:text-rose-300 text-xs font-medium transition-colors">حذف</button>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-xs text-slate-500 py-3 text-center">موردی ثبت نشده است.</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <!-- وزن معیارها -->
+                <div class="card-glass rounded-3xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
+                                وزن معیارهای انتخاب رشته
+                            </h3>
+                            <a href="{% url 'exam:criterion_weights' %}"
+                               class="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
+                                {% if exam_profile.criterion_weights %}ویرایش ✏️{% else %}تنظیم ⚙️{% endif %}
+                            </a>
+                        </div>
+                        {% if exam_profile.criterion_weights %}
+                            <p class="text-xs text-emerald-400/90 leading-relaxed">
+                                ✓ وزن‌دهی به معیارها (اعتبار دانشگاه، آینده شغلی، درآمد و ...) ثبت شده است.
+                            </p>
+                        {% else %}
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                هنوز وزنی تنظیم نکرده‌اید (در تحلیل نهایی مقادیر پیش‌فرض اعمال می‌شود).
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-white/5">
+                        <a href="{% url 'exam:criterion_weights' %}" class="btn-outline w-full py-2.5 rounded-xl text-xs font-bold text-center block">
+                            {% if exam_profile.criterion_weights %}مدیریت وزن معیارها{% else %}شروع وزن‌دهی به معیارها{% endif %}
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- دکمه‌های پایانی صفحه -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 pb-10">
+                <a href="{% url 'exam:summary' %}"
+                   class="btn-neon btn-emerald w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 text-xs font-bold text-white rounded-2xl shadow-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                    تائید نهایی اطلاعات و مشاهده خلاصه
+                </a>
+
+                <a href="{% url 'dashboard' %}"
+                   class="btn-outline w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 text-xs font-semibold rounded-2xl">
+                    بازگشت به داشبورد
+                </a>
+            </div>
+        </div>
+    {% endif %}
 
 </div>
 {% endblock %}

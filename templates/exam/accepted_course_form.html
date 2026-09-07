@@ -1,36 +1,154 @@
 {% extends 'base.html' %}
-{% block title %}افزودن دوره مورد قبول{% endblock %}
+{% block title %}افزودن دوره مورد قبول | پنل انتخاب رشته{% endblock %}
 
 {% block content %}
-<div class="p-4 sm:ml-4 max-w-lg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-   <a href="{% url 'exam:exam_profile' %}" class="text-sm text-blue-600 hover:underline">← بازگشت به پروفایل</a>
+<style>
+    * {
+        font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
 
-   <div class="mt-4 p-6 bg-white border border-gray-200 rounded-lg shadow">
-      <h1 class="text-xl font-bold text-gray-900 mb-1">افزودن دوره مورد قبول</h1>
-      <p class="text-sm text-gray-500 mb-6">
-         دوره‌ی تحصیلی‌ای که حاضرید در آن پذیرفته شوید را انتخاب کنید.
-      </p>
+    body {
+        background-color: #05080f !important;
+        color: #f3f4f6;
+    }
 
-      <form method="post" class="space-y-4">
-         {% csrf_token %}
+    .grid-hatch {
+        background-image:
+            linear-gradient(rgba(99, 102, 241, 0.07) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(99, 102, 241, 0.07) 1px, transparent 1px),
+            radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 44px 44px, 44px 44px, 28px 28px;
+    }
 
-         <div>
-            <label class="block mb-1 text-sm font-medium text-gray-700">دوره تحصیلی</label>
-            <select name="course" required
-               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
-                      focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-               {% for value, label in courses %}
-                  <option value="{{ value }}">{{ label }}</option>
-               {% endfor %}
-            </select>
-         </div>
+    .card-glass {
+        background: linear-gradient(180deg, rgba(20, 28, 48, 0.65) 0%, rgba(8, 12, 24, 0.85) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        box-shadow: 0 15px 40px -15px rgba(0, 0, 0, 0.8);
+    }
 
-         <button type="submit"
-            class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800">
-            افزودن دوره
-         </button>
-      </form>
-   </div>
+    @keyframes pulseGlow {
+        0%, 100% { opacity: 0.25; transform: scale(1); }
+        50% { opacity: 0.45; transform: scale(1.08); }
+    }
+    .aurora-glow {
+        animation: pulseGlow 9s ease-in-out infinite alternate;
+    }
+
+    select {
+        background-color: rgba(13, 19, 36, 0.85) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        color: #f8fafc !important;
+        border-radius: 0.85rem !important;
+        padding: 0.8rem 1rem !important;
+        font-size: 0.875rem !important;
+        width: 100% !important;
+        transition: all 0.25s ease !important;
+        outline: none !important;
+    }
+    select:focus {
+        border-color: #06b6d4 !important;
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25), 0 0 15px rgba(6, 182, 212, 0.3) !important;
+        background-color: rgba(18, 26, 48, 0.95) !important;
+    }
+
+    select option {
+        background-color: #0d1324 !important;
+        color: #f8fafc !important;
+    }
+
+    .btn-neon-cyan {
+        background: linear-gradient(135deg, #06b6d4, #2563eb);
+        box-shadow: 0 0 20px rgba(6, 182, 212, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        transition: all 0.3s ease;
+    }
+    .btn-neon-cyan:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 28px rgba(6, 182, 212, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .text-glow-cyan {
+        background: linear-gradient(135deg, #67e8f9, #38bdf8, #818cf8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .btn-back {
+        color: #94a3b8;
+        transition: all 0.2s ease;
+    }
+    .btn-back:hover {
+        color: #67e8f9;
+        transform: translateX(4px);
+    }
+</style>
+
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#05080f]">
+    <div class="grid-hatch absolute inset-0"></div>
+    <div class="aurora-glow absolute -top-40 -right-32 h-[450px] w-[450px] rounded-full bg-cyan-600/20 blur-[140px]"></div>
+    <div class="aurora-glow absolute bottom-10 -left-32 h-[400px] w-[400px] rounded-full bg-blue-600/20 blur-[130px]" style="animation-delay: -4s;"></div>
+</div>
+
+<div class="relative z-10 p-4 sm:p-6 lg:p-8 max-w-lg mx-auto min-h-[85vh] flex flex-col justify-center">
+
+    <div class="mb-4">
+        <a href="{% url 'exam:exam_profile' %}" class="btn-back inline-flex items-center gap-2 text-xs font-semibold">
+            <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+            بازگشت به پروفایل انتخاب رشته
+        </a>
+    </div>
+
+    <div class="card-glass rounded-3xl p-6 sm:p-8">
+        
+        <div class="flex items-center gap-3.5 mb-6 pb-4 border-b border-white/5">
+            <div class="w-11 h-11 rounded-2xl bg-cyan-500/10 border border-cyan-500/25 text-cyan-400 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-lg font-black text-white tracking-tight">
+                    <span class="text-glow-cyan">افزودن دوره مورد قبول</span>
+                </h1>
+                <p class="text-xs text-slate-400 mt-0.5">
+                    دوره‌ی تحصیلی‌ای که تمایل به پذیرش در آن دارید را انتخاب کنید.
+                </p>
+            </div>
+        </div>
+
+        <form method="post" class="space-y-5">
+            {% csrf_token %}
+
+            <div>
+                <label class="block mb-2 text-xs font-semibold text-slate-300">
+                    دوره تحصیلی
+                </label>
+                <select name="course" required>
+                    {% for value, label in courses %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="pt-3">
+                <button type="submit"
+                    class="btn-neon-cyan w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-xs font-bold text-white rounded-2xl shadow-lg cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    افزودن دوره به لیست
+                </button>
+            </div>
+        </form>
+    </div>
+
 </div>
 {% endblock %}

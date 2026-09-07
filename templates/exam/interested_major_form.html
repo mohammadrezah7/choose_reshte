@@ -1,47 +1,185 @@
 {% extends 'base.html' %}
-{% block title %}افزودن رشته مورد علاقه{% endblock %}
+{% block title %}افزودن رشته مورد علاقه | پنل انتخاب رشته{% endblock %}
 
 {% block content %}
-<div class="p-4 sm:ml-4 max-w-lg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-   <a href="{% url 'exam:exam_profile' %}" class="text-sm text-blue-600 hover:underline">← بازگشت به پروفایل</a>
+<style>
+    * {
+        font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
 
-   <div class="mt-4 p-6 bg-white border border-gray-200 rounded-lg shadow">
-      <h1 class="text-xl font-bold text-gray-900 mb-1">افزودن رشته مورد علاقه</h1>
-      <p class="text-sm text-gray-500 mb-6">
-         نام رشته و میزان علاقه‌ی خود به آن (از ۰ تا ۱۰) را وارد کنید.
-      </p>
+    body {
+        background-color: #05080f !important;
+        color: #f3f4f6;
+    }
 
-      {% if form.non_field_errors %}
-         <div class="mb-4 p-3 rounded-lg text-sm bg-red-50 text-red-700 border border-red-200">
-            {{ form.non_field_errors }}
-         </div>
-      {% endif %}
+    /* گرید هاشور نئونی */
+    .grid-hatch {
+        background-image:
+            linear-gradient(rgba(99, 102, 241, 0.07) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(99, 102, 241, 0.07) 1px, transparent 1px),
+            radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 44px 44px, 44px 44px, 28px 28px;
+    }
 
-      <form method="post" class="space-y-4">
-         {% csrf_token %}
+    /* کارت شیشه‌ای */
+    .card-glass {
+        background: linear-gradient(180deg, rgba(20, 28, 48, 0.65) 0%, rgba(8, 12, 24, 0.85) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        box-shadow: 0 15px 40px -15px rgba(0, 0, 0, 0.8);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-glass:hover {
+        border-color: rgba(236, 72, 153, 0.35);
+        box-shadow: 0 0 30px -8px rgba(236, 72, 153, 0.25), 0 15px 40px -15px rgba(0, 0, 0, 0.8);
+    }
 
-         <div>
-            <label class="block mb-1 text-sm font-medium text-gray-700">{{ form.major_name.label }}</label>
-            {{ form.major_name }}
-            {% if form.major_name.errors %}
-               <p class="mt-1 text-xs text-red-600">{{ form.major_name.errors|join:" " }}</p>
-            {% endif %}
-         </div>
+    /* نور پس‌زمینه */
+    @keyframes pulseGlow {
+        0%, 100% { opacity: 0.25; transform: scale(1); }
+        50% { opacity: 0.45; transform: scale(1.08); }
+    }
+    .aurora-glow {
+        animation: pulseGlow 9s ease-in-out infinite alternate;
+    }
 
-         <div>
-            <label class="block mb-1 text-sm font-medium text-gray-700">{{ form.interest_score.label }}</label>
-            {{ form.interest_score }}
-            {% if form.interest_score.errors %}
-               <p class="mt-1 text-xs text-red-600">{{ form.interest_score.errors|join:" " }}</p>
-            {% endif %}
-         </div>
+    /* المان‌های فرم */
+    input[type="text"], input[type="number"], select {
+        background-color: rgba(13, 19, 36, 0.75) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        color: #f8fafc !important;
+        border-radius: 0.85rem !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.875rem !important;
+        width: 100% !important;
+        transition: all 0.25s ease !important;
+        outline: none !important;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+        border-color: #ec4899 !important;
+        box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.25), 0 0 15px rgba(236, 72, 153, 0.3) !important;
+        background-color: rgba(18, 26, 48, 0.9) !important;
+    }
 
-         <button type="submit"
-            class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800">
-            افزودن رشته
-         </button>
-      </form>
-   </div>
+    /* دکمه‌ها */
+    .btn-neon-pink {
+        background: linear-gradient(135deg, #db2777, #7c3aed);
+        box-shadow: 0 0 20px rgba(236, 72, 153, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        transition: all 0.3s ease;
+    }
+    .btn-neon-pink:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 28px rgba(236, 72, 153, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .btn-back {
+        color: #94a3b8;
+        transition: all 0.2s ease;
+    }
+    .btn-back:hover {
+        color: #f472b6;
+        transform: translateX(4px);
+    }
+
+    .text-glow-pink {
+        background: linear-gradient(135deg, #f472b6, #c084fc);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+</style>
+
+<!-- پس‌زمینه نئونی ثابت -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#05080f]">
+    <div class="grid-hatch absolute inset-0"></div>
+    <div class="aurora-glow absolute -top-40 -right-32 h-[450px] w-[450px] rounded-full bg-pink-600/20 blur-[140px]"></div>
+    <div class="aurora-glow absolute bottom-10 -left-32 h-[400px] w-[400px] rounded-full bg-indigo-600/20 blur-[130px]" style="animation-delay: -4s;"></div>
+</div>
+
+<div class="relative z-10 p-4 sm:p-6 lg:p-8 max-w-lg mx-auto min-h-[85vh] flex flex-col justify-center">
+
+    <!-- لینک بازگشت -->
+    <div class="mb-4">
+        <a href="{% url 'exam:exam_profile' %}" class="btn-back inline-flex items-center gap-2 text-xs font-semibold">
+            <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+            بازگشت به پروفایل انتخاب رشته
+        </a>
+    </div>
+
+    <!-- کارت فرم -->
+    <div class="card-glass rounded-3xl p-6 sm:p-8">
+        
+        <!-- آیکون و هدر فرم -->
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/5">
+            <div class="w-10 h-10 rounded-2xl bg-pink-500/10 border border-pink-500/25 text-pink-400 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(236,72,153,0.2)]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-lg font-black text-white tracking-tight">
+                    <span class="text-glow-pink">افزودن رشته مورد علاقه</span>
+                </h1>
+                <p class="text-xs text-slate-400 mt-0.5">
+                    نام رشته و میزان علاقه خود را از ۰ تا ۱۰ مشخص کنید.
+                </p>
+            </div>
+        </div>
+
+        <!-- خطاهای کلی فرم -->
+        {% if form.non_field_errors %}
+            <div class="mb-5 p-3.5 rounded-2xl text-xs bg-rose-500/10 border border-rose-500/30 text-rose-300 backdrop-blur-md">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="post" class="space-y-5">
+            {% csrf_token %}
+
+            <!-- فیلد نام رشته -->
+            <div>
+                <label class="block mb-2 text-xs font-semibold text-slate-300">
+                    {{ form.major_name.label }}
+                </label>
+                {{ form.major_name }}
+                {% if form.major_name.errors %}
+                    <p class="mt-1.5 text-xs text-rose-400">{{ form.major_name.errors|join:" " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- فیلد نمره علاقه -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-semibold text-slate-300">
+                        {{ form.interest_score.label }}
+                    </label>
+                    <span class="text-[11px] text-slate-500">بین ۰ (کمترین) تا ۱۰ (بیشترین)</span>
+                </div>
+                {{ form.interest_score }}
+                {% if form.interest_score.errors %}
+                    <p class="mt-1.5 text-xs text-rose-400">{{ form.interest_score.errors|join:" " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- دکمه ثبت -->
+            <div class="pt-3">
+                <button type="submit"
+                    class="btn-neon-pink w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-xs font-bold text-white rounded-2xl shadow-lg cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    افزودن رشته به لیست علاقه‌مندی‌ها
+                </button>
+            </div>
+        </form>
+    </div>
+
 </div>
 {% endblock %}

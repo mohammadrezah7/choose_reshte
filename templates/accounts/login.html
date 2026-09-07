@@ -1,215 +1,275 @@
 {% extends 'base.html' %}
-{% block title %}ورود | پنل انتخاب رشته{% endblock %}
+{% block title %}ورود به پنل هوشمند انتخاب رشته{% endblock %}
 
 {% block content %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
+    * {
+        font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* جلوگیری کامل از اسکرول صفحه */
     html, body {
-        height: 100%;
-        width: 100%;
-        overflow: auto; /* تغییر به auto برای اسکرول در صورت نیاز */
+        height: 100vh !important;
+        overflow: hidden !important;
+        background-color: #05080f !important;
+        color: #f3f4f6;
         margin: 0;
         padding: 0;
-        font-family: "Vazirmatn", sans-serif;
     }
 
-    * {
-        box-sizing: border-box;
-    }
-
-    .page-background {
-        background:
-            radial-gradient(circle at 8% 12%, rgba(236, 72, 153, .32), transparent 27%),
-            radial-gradient(circle at 92% 8%, rgba(99, 102, 241, .40), transparent 28%),
-            radial-gradient(circle at 78% 90%, rgba(168, 85, 247, .32), transparent 30%),
-            linear-gradient(135deg, #eef2ff 0%, #fdf2f8 48%, #ede9fe 100%);
-    }
-
-    .grid-pattern {
+    /* ===== هاشور گرید نئونی ===== */
+    .grid-hatch {
         background-image:
-            linear-gradient(rgba(99, 91, 255, .055) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(99, 91, 255, .055) 1px, transparent 1px);
-        background-size: 34px 34px;
+            linear-gradient(rgba(99, 102, 241, 0.07) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(99, 102, 241, 0.07) 1px, transparent 1px),
+            radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 44px 44px, 44px 44px, 28px 28px;
+        -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, black 30%, transparent 100%);
+        mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, black 30%, transparent 100%);
     }
 
-    .glass {
-        background: rgba(255, 255, 255, .72);
-        border: 1px solid rgba(255, 255, 255, .75);
+    /* کارت شیشه‌ای */
+    .card-black-glass {
+        background: linear-gradient(180deg, rgba(20, 28, 48, 0.75) 0%, rgba(8, 12, 24, 0.92) 100%);
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow:
-            0 25px 70px rgba(79, 70, 229, .15),
-            inset 0 1px 0 rgba(255, 255, 255, .9);
-        backdrop-filter: blur(22px);
-        -webkit-backdrop-filter: blur(22px);
+            0 0 0 1px rgba(255, 255, 255, 0.03),
+            0 25px 60px -15px rgba(0, 0, 0, 0.9),
+            0 0 40px -10px rgba(99, 102, 241, 0.15);
     }
 
-    .input-field {
-        border-color: #cbd5e1;
-        background: rgba(255, 255, 255, .8);
+    /* ورودی‌ها */
+    .dark-input {
+        background: rgba(10, 15, 28, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .dark-input:focus {
+        border-color: #6366f1;
+        background: rgba(13, 19, 38, 1);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2), 0 0 20px rgba(99, 102, 241, 0.25);
     }
 
-    .submit-button {
-        background: linear-gradient(110deg, #5148e5, #7c3aed, #db2777);
+    /* دکمه نئونی */
+    .glow-btn {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+        background-size: 200% auto;
+        box-shadow: 0 0 25px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        transition: all 0.3s ease;
+    }
+    .glow-btn:hover {
+        background-position: right center;
+        box-shadow: 0 0 35px rgba(236, 72, 153, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        transform: translateY(-2px);
+    }
+    .glow-btn:active {
+        transform: translateY(0);
     }
 
-    .submit-button:disabled {
-        opacity: .8;
-        cursor: wait;
+    /* پالس نور پس‌زمینه */
+    @keyframes pulseGlow {
+        0%, 100% { opacity: 0.35; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.08); }
+    }
+    .aurora-glow {
+        animation: pulseGlow 8s ease-in-out infinite alternate;
+    }
+
+    /* لوگوی متحرک */
+    @keyframes floatLogo {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+    @keyframes spinRing {
+        to { transform: rotate(360deg); }
+    }
+    .logo-float {
+        animation: floatLogo 4s ease-in-out infinite;
+    }
+    .logo-ring {
+        position: absolute;
+        inset: -6px;
+        border-radius: 1.4rem;
+        background: conic-gradient(from 0deg, #4f46e5, #ec4899, #8b5cf6, #4f46e5);
+        opacity: 0.55;
+        filter: blur(10px);
+        animation: spinRing 6s linear infinite;
+        z-index: -1;
+    }
+    .logo-inner {
+        background: linear-gradient(145deg, #101830 0%, #0a1024 100%);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 10px 25px -8px rgba(79, 70, 229, 0.45);
     }
 </style>
 
-<div class="page-background fixed inset-0 z-0 overflow-hidden">
-    <div class="absolute inset-0 grid-pattern pointer-events-none"></div>
-    <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-fuchsia-400/25 blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-32 -left-20 h-96 w-96 rounded-full bg-indigo-500/25 blur-3xl pointer-events-none"></div>
+<!-- پس‌زمینه نئونی ثابت -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#05080f]">
+    <div class="grid-hatch absolute inset-0"></div>
+    <div class="aurora-glow absolute -top-32 -left-20 h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-[130px]"></div>
+    <div class="aurora-glow absolute top-1/3 -right-32 h-[450px] w-[450px] rounded-full bg-pink-600/15 blur-[140px]" style="animation-delay: -3s;"></div>
+    <div class="aurora-glow absolute -bottom-32 left-1/3 h-[400px] w-[400px] rounded-full bg-purple-600/20 blur-[130px]" style="animation-delay: -5s;"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.45)_100%)]"></div>
 </div>
 
-<header class="fixed inset-x-0 top-0 z-50 px-4 pt-3 md:px-8">
-    <nav class="glass mx-auto flex w-full max-w-7xl items-center justify-between rounded-xl px-4 py-2 md:px-6">
-        <a href="#" class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 text-base font-black text-white shadow-lg shadow-indigo-500/25">
-                R
-            </div>
+<!-- کانتینر اصلی -->
+<main class="fixed inset-0 z-10 flex flex-col items-center justify-center px-4">
+    <div class="w-full max-w-[400px]">
+        <div class="card-black-glass relative rounded-[2rem] p-6 sm:p-7">
+            <div class="absolute -top-px left-1/2 h-[1.5px] w-3/4 -translate-x-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent"></div>
 
-            <div>
-                <div class="bg-gradient-to-l from-indigo-700 to-pink-600 bg-clip-text text-sm font-black text-transparent">
-                    پنل انتخاب رشته
-                </div>
-                <div class="hidden text-[10px] font-medium text-slate-500 sm:block">
-                    مسیر آینده‌ات را هوشمندانه انتخاب کن
-                </div>
-            </div>
-        </a>
-
-        <div class="flex items-center gap-2">
-            <span class="hidden text-[11px] text-slate-500 sm:inline">
-                هنوز ثبت‌نام نکرده‌اید؟
-            </span>
-            <a href="{% url 'signup' %}"
-               class="rounded-lg border border-indigo-200 bg-white/60 px-3 py-1.5 text-xs font-bold text-indigo-700">
-                ایجاد حساب
-            </a>
-        </div>
-    </nav>
-</header>
-
-<main class="relative z-10 flex h-screen flex-col items-center justify-start gap-4 overflow-hidden px-4">
-    
-    <!-- اضافه کردن margin-top به جای padding برای فاصله از بالا -->
-    <section class="glass w-full max-w-sm rounded-[1.75rem] p-5 sm:p-6 mt-24">
-
-        <div class="mb-4 text-center">
-            <div class="mx-auto mb-2.5 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 text-base font-black text-white shadow-xl shadow-purple-500/25">
-                ✦
-            </div>
-            <h1 class="text-xl font-black text-slate-800">ورود به حساب کاربری</h1>
-            <p class="mt-1 text-[10px] text-slate-500">
-                خوش آمدید! لطفاً اطلاعات خود را وارد کنید
-            </p>
-        </div>
-
-        <form method="POST" class="space-y-3" id="loginForm">
-            {% csrf_token %}
-
-            {% if error %}
-                <div class="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-2.5 text-[10px] leading-4 text-red-700">
-                    <span class="text-xs font-bold">!</span>
-                    <div>{{ error }}</div>
-                </div>
-            {% endif %}
-
-            <div>
-                <label for="usernameInput" class="mb-1 mr-1 block text-[10px] font-bold text-slate-700">
-                    نام کاربری
-                </label>
-                <div class="relative">
-                    <input
-                        type="text"
-                        name="username"
-                        id="usernameInput"
-                        required
-                        autocomplete="username"
-                        placeholder="نام کاربری خود را وارد کنید"
-                        class="input-field w-full rounded-xl border px-3.5 py-2.5 pl-9 text-xs text-slate-800 placeholder:text-slate-400 outline-none"
-                    >
-                    <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400">
-                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM5 21a7 7 0 0114 0"/>
+            <!-- لوگو -->
+            <div class="text-center mb-5">
+                <div class="logo-float relative mx-auto mb-4 h-14 w-14">
+                    <div class="logo-ring"></div>
+                    <div class="logo-inner relative flex h-14 w-14 items-center justify-center rounded-2xl border border-white/15">
+                        <svg class="h-7 w-7 text-indigo-300 drop-shadow-[0_0_8px_rgba(99,102,241,0.7)]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4 L22 8.5 L12 13 L2 8.5 Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 10.5 V15 C6 15 7.5 17.5 12 17.5 C16.5 17.5 18 15 18 15 V10.5"/>
+                            <path stroke-linecap="round" d="M22 8.5 V14"/>
                         </svg>
-                    </span>
+                    </div>
                 </div>
+                <h1 class="text-xl font-black tracking-tight text-white">ورود به حساب</h1>
+                <p class="mt-1 text-[11px] text-slate-400">اطلاعات ورود خود را وارد نمایید</p>
             </div>
 
-            <div>
-                <label for="passwordInput" class="mb-1 mr-1 block text-[10px] font-bold text-slate-700">
-                    رمز عبور
-                </label>
-                <div class="relative">
-                    <input
-                        type="password"
-                        name="password"
-                        id="passwordInput"
-                        required
-                        autocomplete="current-password"
-                        placeholder="رمز عبور خود را وارد کنید"
-                        class="input-field w-full rounded-xl border px-3.5 py-2.5 pl-9 text-xs text-slate-800 placeholder:text-slate-400 outline-none"
-                    >
-                    <button
-                        type="button"
-                        data-toggle-password="passwordInput"
-                        class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                        aria-label="نمایش رمز عبور"
-                    >
-                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/>
-                            <circle cx="12" cy="12" r="2.5" stroke-width="1.8"/>
+            <!-- فرم -->
+            <form method="POST" class="space-y-3.5" id="loginForm">
+                {% csrf_token %}
+
+                {% if error %}
+                    <div class="flex items-center gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 p-2.5 text-xs text-rose-300">
+                        <svg class="h-4 w-4 shrink-0 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"/>
                         </svg>
-                    </button>
+                        <span>{{ error }}</span>
+                    </div>
+                {% endif %}
+
+                <!-- نام کاربری -->
+                <div>
+                    <label for="usernameInput" class="mb-1 block text-xs font-semibold text-slate-300">
+                        نام کاربری
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="text"
+                            name="username"
+                            id="usernameInput"
+                            required
+                            autocomplete="username"
+                            placeholder="نام کاربری شما..."
+                            class="dark-input w-full rounded-xl px-3.5 py-2.5 pl-10 text-xs placeholder:text-slate-500 outline-none"
+                        >
+                        <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </span>
+                    </div>
                 </div>
-            </div>
 
-            <button
-                type="submit"
-                class="submit-button mt-1.5 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-black text-white"
-            >
-                <span>ورود به حساب</span>
-                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-5-5 5 5-5 5"/>
-                </svg>
-            </button>
+                <!-- رمز عبور -->
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label for="passwordInput" class="block text-xs font-semibold text-slate-300">
+                            رمز عبور
+                        </label>
+                        <a href="#" class="text-[11px] font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
+                            فراموشی رمز؟
+                        </a>
+                    </div>
+                    <div class="relative">
+                        <input
+                            type="password"
+                            name="password"
+                            id="passwordInput"
+                            required
+                            autocomplete="current-password"
+                            placeholder="••••••••"
+                            class="dark-input w-full rounded-xl px-3.5 py-2.5 pl-10 text-xs placeholder:text-slate-500 outline-none"
+                        >
+                        <button
+                            type="button"
+                            data-toggle-password="passwordInput"
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+                            aria-label="نمایش رمز عبور"
+                        >
+                            <svg id="eyeIconOpen" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            <svg id="eyeIconClose" class="h-4 w-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
 
-            <div class="flex items-center gap-2 py-0.5">
-                <div class="h-px flex-1 bg-slate-200"></div>
-                <span class="text-[9px] font-medium text-slate-400">یا</span>
-                <div class="h-px flex-1 bg-slate-200"></div>
-            </div>
+                <!-- دکمه ورود -->
+                <button
+                    type="submit"
+                    class="glow-btn mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 px-4 text-xs sm:text-sm font-bold text-white transition-all cursor-pointer"
+                >
+                    <span id="btnText">ورود به پنل کاربری</span>
+                    <svg id="btnArrow" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <svg id="btnSpinner" class="hidden h-4 w-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
 
-            <p class="text-center text-[11px] text-slate-500">
-                هنوز ثبت‌نام نکرده‌اید؟
-                <a href="{% url 'signup' %}" class="font-black text-indigo-600">
-                    حساب جدید بسازید
-                </a>
-            </p>
-        </form>
-    </section>
+                <!-- خط جداکننده -->
+                <div class="relative flex items-center justify-center py-1">
+                    <div class="border-t border-white/10 w-full"></div>
+                    <span class="bg-[#0b101d] px-2 text-[10px] text-slate-500 absolute">یا</span>
+                </div>
 
-    <!-- فوتر -->
-    <div class="text-center text-[10px] text-slate-400 mt-auto mb-4">
-        © 1405 پنل انتخاب رشته — ساخته‌شده برای انتخابی مطمئن‌تر
+                <!-- لینک ثبت‌نام -->
+                <p class="text-center text-[11px] text-slate-400">
+                    هنوز ثبت‌نام نکرده‌اید؟
+                    <a href="{% url 'signup' %}" class="font-bold text-indigo-400 hover:text-indigo-300 transition-colors mr-1">
+                        ایجاد حساب جدید
+                    </a>
+                </p>
+            </form>
+        </div>
+
+        <div class="mt-4 text-center text-[11px] text-slate-600">
+            © 1405 تمامی حقوق محفوظ است • پنل هوشمند انتخاب رشته
+        </div>
     </div>
-
 </main>
-
 
 <script>
     document.querySelectorAll("[data-toggle-password]").forEach(button => {
         button.addEventListener("click", () => {
-            const inputId = button.dataset.togglePassword;
+            const inputId = button.getAttribute("data-toggle-password");
             const input = document.getElementById(inputId);
+            const eyeOpen = button.querySelector("#eyeIconOpen");
+            const eyeClose = button.querySelector("#eyeIconClose");
+
             if (!input) return;
-            input.type = input.type === "password" ? "text" : "password";
+
+            if (input.type === "password") {
+                input.type = "text";
+                if (eyeOpen) eyeOpen.classList.add("hidden");
+                if (eyeClose) eyeClose.classList.remove("hidden");
+            } else {
+                input.type = "password";
+                if (eyeOpen) eyeOpen.classList.remove("hidden");
+                if (eyeClose) eyeClose.classList.add("hidden");
+            }
         });
     });
 
@@ -217,9 +277,17 @@
     if (loginForm) {
         loginForm.addEventListener("submit", () => {
             const submitButton = loginForm.querySelector("button[type='submit']");
-            const buttonText = submitButton.querySelector("span");
-            submitButton.disabled = true;
-            buttonText.textContent = "در حال ورود...";
+            const btnText = document.getElementById("btnText");
+            const btnArrow = document.getElementById("btnArrow");
+            const btnSpinner = document.getElementById("btnSpinner");
+
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.classList.add("opacity-80", "cursor-wait");
+            }
+            if (btnText) btnText.textContent = "در حال احراز هویت...";
+            if (btnArrow) btnArrow.classList.add("hidden");
+            if (btnSpinner) btnSpinner.classList.remove("hidden");
         });
     }
 </script>
