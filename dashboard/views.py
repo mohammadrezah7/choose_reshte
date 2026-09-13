@@ -56,7 +56,7 @@ def dashboard_view(request):
             exam_profile.city,
             exam_profile.quota,
             exam_profile.national_rank,
-            exam_profile.final_score,
+            exam_profile.total_score,
         ]
 
         completed_fields = sum(
