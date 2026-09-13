@@ -57,7 +57,7 @@ class StudentExamProfileAdmin(admin.ModelAdmin):
         "quota",
         "selection_type",
         "national_rank",
-        "final_score",
+        "total_score"
     )
 
     list_filter = (

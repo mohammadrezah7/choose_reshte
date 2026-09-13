@@ -13,8 +13,6 @@ class StudentExamProfile(models.Model):
         MATHEMATICS = "math", "ریاضی و فنی"
         EXPERIMENTAL = "experimental", "علوم تجربی"
         HUMANITIES = "humanities", "علوم انسانی"
-        ART = "art", "هنر"
-        LANGUAGES = "languages", "زبان‌های خارجی"
 
     class Quota(models.TextChoices):
         REGION_1 = "region_1", "منطقه ۱"
@@ -22,7 +20,11 @@ class StudentExamProfile(models.Model):
         REGION_3 = "region_3", "منطقه ۳"
         MARTYR_5 = "martyr_5", "ایثارگران ۵ درصد"
         MARTYR_25 = "martyr_25", "ایثارگران ۲۵ درصد"
-        OTHER = "other", "سایر"
+
+    class Quota2(models.TextChoices):
+            REGION_1 = "region_1", "منطقه ۱"
+            REGION_2 = "region_2", "منطقه ۲"
+            REGION_3 = "region_3", "منطقه ۳"
 
     class SelectionType(models.TextChoices):
         NATIONAL = "national", "کشوری"
@@ -37,7 +39,6 @@ class StudentExamProfile(models.Model):
         AZAD = "azad", "دانشگاه آزاد"
         PAYAME_NOOR = "payame_noor", "پیام‌نور"
         NON_PROFIT = "non_profit", "غیرانتفاعی"
-        OTHER = "other", "سایر"
 
     class AllowedStatus(models.TextChoices):
         ALLOWED = "allowed", "مجاز"
@@ -90,7 +91,7 @@ class StudentExamProfile(models.Model):
 
     region = models.CharField(
         max_length=50,
-        blank=True,
+        choices=Quota2.choices,
         verbose_name="منطقه",
     )
 
@@ -110,57 +111,32 @@ class StudentExamProfile(models.Model):
         max_length=20,
         choices=SelectionType.choices,
         blank=True,
-        verbose_name="نوع گزینش رشته",
+        verbose_name="نوع گزینش رشته / اختیاری",
     )
 
     rank_in_quota = models.PositiveIntegerField(
-        null=True,
-        blank=True,
         verbose_name="رتبه در سهمیه",
     )
 
     rank_in_region = models.PositiveIntegerField(
-        null=True,
-        blank=True,
         verbose_name="رتبه در منطقه",
     )
 
     national_rank = models.PositiveIntegerField(
-        null=True,
-        blank=True,
         verbose_name="رتبه کشوری",
     )
 
-    total_score = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        null=True,
-        blank=True,
+    total_score = models.PositiveIntegerField(
         verbose_name="تراز کل",
     )
 
-    exam_score = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        null=True,
-        blank=True,
+    exam_score = models.PositiveIntegerField(
         verbose_name="تراز کنکور / آزمون اختصاصی",
     )
 
-    academic_record_score = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        null=True,
-        blank=True,
-        verbose_name="تراز سوابق تحصیلی",
-    )
+    academic_record_score = models.PositiveIntegerField(
 
-    final_score = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        null=True,
-        blank=True,
-        verbose_name="تراز نهایی / نمره کل نهایی",
+        verbose_name="تراز سوابق تحصیلی",
     )
 
     allowed_daytime = models.CharField(
@@ -176,7 +152,7 @@ class StudentExamProfile(models.Model):
         choices=AllowedStatus.choices,
         default=AllowedStatus.UNKNOWN,
         blank=True,
-        verbose_name="مجاز بودن نوبت دوم / شبانه",
+        verbose_name="مجاز بودن نوبت دوم",
     )
 
     allowed_campus = models.CharField(
@@ -184,7 +160,7 @@ class StudentExamProfile(models.Model):
         choices=AllowedStatus.choices,
         default=AllowedStatus.UNKNOWN,
         blank=True,
-        verbose_name="مجاز بودن پردیس خودگردان",
+        verbose_name="مجاز بودن مجازی و پردیس خودگردان",
     )
 
     allowed_azad = models.CharField(

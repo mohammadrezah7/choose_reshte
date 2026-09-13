@@ -49,7 +49,7 @@ class StudentExamProfileForm(forms.ModelForm):
                 attrs={
                     "class": TEXT_CLASSES,
                     "min": "1400",
-                    "max": "1500",
+                    "max": "1405",
                 }
             ),
             "province": forms.TextInput(
@@ -67,11 +67,9 @@ class StudentExamProfileForm(forms.ModelForm):
             "quota": forms.Select(
                 attrs={"class": SELECT_CLASSES}
             ),
-            "region": forms.TextInput(
-                attrs={
-                    "class": TEXT_CLASSES,
-                    "placeholder": "منطقه",
-                }
+            "region": forms.Select(
+                attrs=
+                    {"class": SELECT_CLASSES}
             ),
             "native_area": forms.TextInput(
                 attrs={
@@ -109,28 +107,18 @@ class StudentExamProfileForm(forms.ModelForm):
             "total_score": forms.NumberInput(
                 attrs={
                     "class": TEXT_CLASSES,
-                    "step": "0.01",
                     "min": "0",
                 }
             ),
             "exam_score": forms.NumberInput(
                 attrs={
                     "class": TEXT_CLASSES,
-                    "step": "0.01",
                     "min": "0",
                 }
             ),
             "academic_record_score": forms.NumberInput(
                 attrs={
                     "class": TEXT_CLASSES,
-                    "step": "0.01",
-                    "min": "0",
-                }
-            ),
-            "final_score": forms.NumberInput(
-                attrs={
-                    "class": TEXT_CLASSES,
-                    "step": "0.01",
                     "min": "0",
                 }
             ),
