@@ -97,5 +97,76 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    <!-- نوار پیام هوشمند (Toast Notification) -->
+{% if messages %}
+    <div id="toast-container" class="fixed bottom-5 left-5 z-50 flex flex-col gap-3">
+        {% for message in messages %}
+            <div class="toast-item flex items-center gap-3 px-5 py-4 bg-emerald-950/90 border border-emerald-500/40 text-emerald-200 rounded-2xl shadow-[0_10px_30px_rgba(16,185,129,0.25)] backdrop-blur-xl transition-all duration-500 transform translate-y-20 opacity-0 pointer-events-none">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-white">{{ message }}</h4>
+                    <p class="text-[10px] text-emerald-300/80 mt-0.5">تغییرات با موفقیت در پایگاه داده ذخیره گردید.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // -------------------------------------------------------------
+    // 1. Toast Notification Handler (نمایش ۳ ثانیه‌ای)
+    // -------------------------------------------------------------
+    const toastItems = document.querySelectorAll('.toast-item');
+    
+    toastItems.forEach(toast => {
+        // ظاهر شدن پیام با انیمیشن
+        setTimeout(() => {
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+        }, 100);
+
+        // محو شدن خودکار بعد از ۳ ثانیه
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+        }, 3100);
+    });
+
+    // -------------------------------------------------------------
+    // 2. منطق انتخاب سلسله‌مراتبی توان مالی
+    // -------------------------------------------------------------
+    const tuitionHierarchy = [
+        'can_pay_campus',      // پردیس خودگردان (گران‌ترین)
+        'can_pay_azad',        // دانشگاه آزاد
+        'can_pay_night',       // شبانه
+        'can_pay_non_profit',  // غیرانتفاعی
+        'can_pay_payame_noor'  // پیام‌نور (ارزان‌ترین)
+    ];
+
+    const checkboxes = tuitionHierarchy.map(name => document.querySelector(`input[name="${name}"]`));
+
+    checkboxes.forEach((checkbox, index) => {
+        if (!checkbox) return;
+
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                for (let i = index + 1; i < checkboxes.length; i++) {
+                    if (checkboxes[i]) checkboxes[i].checked = true;
+                }
+            } else {
+                checkboxes.forEach(cb => {
+                    if (cb) cb.checked = false;
+                });
+            }
+        });
+    });
+});
+</script>
+
 </body>
 </html>

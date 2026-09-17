@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
@@ -38,6 +39,9 @@ def exam_profile_view(request):
             exam_profile.user = request.user
             exam_profile.save()
 
+            # پیام موفقیت برای نمایش Toast
+            messages.success(request, "اطلاعات پروفایل با موفقیت ثبت شد.")
+
             return redirect("exam:exam_profile")
 
     else:
@@ -74,6 +78,7 @@ def interested_major_create(request):
             interested_major.profile = profile
             interested_major.save()
 
+            messages.success(request, "رشته مورد علاقه با موفقیت ثبت شد.")
             return redirect("exam:exam_profile")
 
     else:
@@ -107,6 +112,7 @@ def interested_major_delete(request, pk):
 
     if request.method == "POST":
         major.delete()
+        messages.success(request, "رشته مورد نظر با موفقیت حذف شد.")
 
     return redirect("exam:exam_profile")
 
@@ -130,6 +136,7 @@ def rejected_major_create(request):
             rejected_major.profile = profile
             rejected_major.save()
 
+            messages.success(request, "رشته غیرقابل قبول با موفقیت اضافه شد.")
             return redirect("exam:exam_profile")
 
     else:
@@ -163,6 +170,7 @@ def rejected_major_delete(request, pk):
 
     if request.method == "POST":
         major.delete()
+        messages.success(request, "رشته غیرقابل قبول با موفقیت حذف شد.")
 
     return redirect("exam:exam_profile")
 
@@ -193,6 +201,7 @@ def criterion_weight_view(request):
             weights.profile = profile
             weights.save()
 
+            messages.success(request, "وزن معیارها با موفقیت ذخیره شد.")
             return redirect("exam:criterion_weights")
 
     else:
@@ -234,6 +243,7 @@ def accepted_course_add(request):
                 profile=profile,
                 course=course,
             )
+            messages.success(request, "دوره تحصیلی مورد قبول با موفقیت افزوده شد.")
 
         return redirect("exam:exam_profile")
 
@@ -265,6 +275,7 @@ def accepted_course_delete(request, pk):
 
     if request.method == "POST":
         accepted_course.delete()
+        messages.success(request, "دوره تحصیلی مورد قبول حذف گردید.")
 
     return redirect("exam:exam_profile")
 
@@ -336,4 +347,5 @@ def exam_profile_save_all(request):
         exam_profile.user = request.user
         exam_profile.save()
 
+    messages.success(request, "تمام اطلاعات با موفقیت در سیستم ثبت گردید.")
     return redirect("exam:exam_profile")
