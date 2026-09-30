@@ -1,11 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}سامانه انتخاب رشته{% endblock %}</title>
+    <title>{% block title %}سامو (SaMo) | سامانه انتخاب رشته{% endblock %}</title>
     
-    <!-- فونت وزیرمتن -->
+    <!-- Vazirmatn Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -19,7 +20,7 @@
             font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
-        /* استایل هدر دارک شیشه‌ای */
+        /* Dark Glass Navbar */
         .dark-navbar {
             background: rgba(8, 12, 22, 0.85);
             backdrop-filter: blur(20px);
@@ -28,127 +29,139 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
-        /* دکمه گرادیانی ثبت‌نام */
+        /* Gradient Signup Button */
         .nav-glow-btn {
             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
             box-shadow: 0 0 15px rgba(99, 102, 241, 0.35);
             transition: all 0.3s ease;
         }
+
         .nav-glow-btn:hover {
             box-shadow: 0 0 25px rgba(236, 72, 153, 0.5);
             transform: translateY(-1px);
         }
     </style>
 </head>
+
 <body class="bg-[#030712] text-slate-100 min-h-screen">
 
-    <!-- Navigation Header Dark -->
-    <nav class="dark-navbar px-4 sm:px-6 py-3 fixed left-0 right-0 top-0 z-50 transition-all">
+    <!-- Dark Navigation Header -->
+    <nav class="dark-navbar px-4 sm:px-6 py-2.5 fixed left-0 right-0 top-0 z-50 transition-all">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center">
             
-            <!-- عنوان برند بدون لوگو -->
-            <a href="/" class="flex items-center group">
-                <span class="relative self-center text-lg sm:text-xl font-black tracking-tight text-white group-hover:text-indigo-300 transition-colors">
-                    پنل انتخاب رشته
-                    <!-- خط گرادیانی زیر متن -->
-                    <svg
-                        class="absolute -bottom-1.5 right-0 h-2.5 w-full pointer-events-none text-indigo-500"
-                        viewBox="0 0 200 20"
-                        preserveAspectRatio="none"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true">
-                        <path
-                            d="M 5,10 C 55,18 145,18 195,8"
-                            stroke="currentColor"
-                            stroke-width="3"
-                            stroke-linecap="round">
-                        </path>
-                    </svg>
-                </span>
-            </a>
-
-            <!-- بخش اکشن‌ها و دکمه‌های ورود/خروج -->
-            <div class="flex items-center gap-3">
+            <!-- Login / Logout Actions -->
+            <div class="flex items-center gap-3 order-2 sm:order-1">
                 {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 rounded-lg px-3.5 py-2 transition-all">
+                        خروج
+                    </a>
+                    
                     <div class="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-300 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">
                         <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         <span>{{ user.username }}</span>
                     </div>
-                    <a href="{% url 'logout' %}" class="text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 rounded-lg px-3.5 py-2 transition-all">
-                        خروج
-                    </a>
                 {% else %}
                     <a href="{% url 'login' %}" class="text-xs sm:text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/10 rounded-lg px-3.5 py-2 transition-colors">
                         ورود
                     </a>
+
                     <a href="{% url 'signup' %}" class="nav-glow-btn text-xs sm:text-sm font-bold text-white rounded-lg px-4 py-2">
                         ثبت‌نام
                     </a>
                 {% endif %}
             </div>
 
+            <!-- SaMo Logo Image -->
+            <a href="/" class="flex items-center group order-1 sm:order-2 transition-transform duration-300 hover:scale-105">
+                <img 
+                    src="{% static 'images/logo.png' %}" 
+                    alt="SaMo Logo" 
+                    class="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_0_15px_rgba(56,189,248,0.25)]"
+                />
+            </a>
+
         </div>
     </nav>
 
-    <!-- محتوای صفحات -->
+    <!-- Page Content -->
     <div class="pt-16">
         {% block content %}{% endblock %}
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
-    <!-- نوار پیام هوشمند (Toast Notification) -->
-{% if messages %}
-    <div id="toast-container" class="fixed bottom-5 left-5 z-50 flex flex-col gap-3">
-        {% for message in messages %}
-            <div class="toast-item flex items-center gap-3 px-5 py-4 bg-emerald-950/90 border border-emerald-500/40 text-emerald-200 rounded-2xl shadow-[0_10px_30px_rgba(16,185,129,0.25)] backdrop-blur-xl transition-all duration-500 transform translate-y-20 opacity-0 pointer-events-none">
-                <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                    </svg>
+
+    <!-- Smart Toast Notification -->
+    {% if messages %}
+        <div id="toast-container" class="fixed bottom-5 left-5 z-50 flex flex-col gap-3">
+            {% for message in messages %}
+                <div class="toast-item flex items-center gap-3 px-5 py-4 bg-emerald-950/90 border border-emerald-500/40 text-emerald-200 rounded-2xl shadow-[0_10px_30px_rgba(16,185,129,0.25)] backdrop-blur-xl transition-all duration-500 transform translate-y-20 opacity-0 pointer-events-none">
+                    
+                    <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-white">{{ message }}</h4>
+                        <p class="text-[10px] text-emerald-300/80 mt-0.5">
+                            تغییرات با موفقیت در پایگاه داده ذخیره گردید.
+                        </p>
+                    </div>
+
                 </div>
-                <div>
-                    <h4 class="text-xs font-bold text-white">{{ message }}</h4>
-                    <p class="text-[10px] text-emerald-300/80 mt-0.5">تغییرات با موفقیت در پایگاه داده ذخیره گردید.</p>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+
     // -------------------------------------------------------------
-    // 1. Toast Notification Handler (نمایش ۳ ثانیه‌ای)
+    // 1. Toast Notification Handler (3-second display)
     // -------------------------------------------------------------
     const toastItems = document.querySelectorAll('.toast-item');
-    
+     
     toastItems.forEach(toast => {
-        // ظاهر شدن پیام با انیمیشن
         setTimeout(() => {
-            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
-            toast.classList.add('translate-y-0', 'opacity-100');
+            toast.classList.remove(
+                'translate-y-20',
+                'opacity-0',
+                'pointer-events-none'
+            );
+            toast.classList.add(
+                'translate-y-0',
+                'opacity-100'
+            );
         }, 100);
 
-        // محو شدن خودکار بعد از ۳ ثانیه
         setTimeout(() => {
-            toast.classList.remove('translate-y-0', 'opacity-100');
-            toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.remove(
+                'translate-y-0',
+                'opacity-100'
+            );
+            toast.classList.add(
+                'translate-y-20',
+                'opacity-0',
+                'pointer-events-none'
+            );
         }, 3100);
     });
 
     // -------------------------------------------------------------
-    // 2. منطق انتخاب سلسله‌مراتبی توان مالی
+    // 2. Hierarchical Tuition Selection Logic
     // -------------------------------------------------------------
     const tuitionHierarchy = [
-        'can_pay_campus',      // پردیس خودگردان (گران‌ترین)
-        'can_pay_azad',        // دانشگاه آزاد
-        'can_pay_night',       // شبانه
-        'can_pay_non_profit',  // غیرانتفاعی
-        'can_pay_payame_noor'  // پیام‌نور (ارزان‌ترین)
+        'can_pay_campus',      // Self-Governed Campus (Most Expensive)
+        'can_pay_azad',        // Islamic Azad University
+        'can_pay_night',       // Night Program
+        'can_pay_non_profit',  // Non-Profit University
+        'can_pay_payame_noor'  // Payame Noor University (Least Expensive)
     ];
 
-    const checkboxes = tuitionHierarchy.map(name => document.querySelector(`input[name="${name}"]`));
+    const checkboxes = tuitionHierarchy.map(
+        name => document.querySelector(`input[name="${name}"]`)
+    );
 
     checkboxes.forEach((checkbox, index) => {
         if (!checkbox) return;
@@ -156,15 +169,20 @@ document.addEventListener('DOMContentLoaded', function() {
         checkbox.addEventListener('change', function() {
             if (this.checked) {
                 for (let i = index + 1; i < checkboxes.length; i++) {
-                    if (checkboxes[i]) checkboxes[i].checked = true;
+                    if (checkboxes[i]) {
+                        checkboxes[i].checked = true;
+                    }
                 }
             } else {
                 checkboxes.forEach(cb => {
-                    if (cb) cb.checked = false;
+                    if (cb) {
+                        cb.checked = false;
+                    }
                 });
             }
         });
     });
+
 });
 </script>
 
