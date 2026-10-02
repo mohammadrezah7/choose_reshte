@@ -378,12 +378,6 @@ class CriterionWeight(models.Model):
         verbose_name="امکان مهاجرت",
     )
 
-    academic_career = models.PositiveSmallIntegerField(
-        default=0,
-        validators=[MinValueValidator(0), MaxValueValidator(10)],
-        verbose_name="امکان هیئت علمی",
-    )
-
     class Meta:
         verbose_name = "وزن معیار انتخاب رشته"
         verbose_name_plural = "وزن معیارهای انتخاب رشته"

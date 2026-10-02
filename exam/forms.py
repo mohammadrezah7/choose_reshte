@@ -7,6 +7,66 @@ from .models import (
     StudentExamProfile,
 )
 
+from django.utils.html import format_html
+
+
+class RangeNumberWidget(forms.NumberInput):
+    def __init__(self, *args, range_min=0, range_max=10, **kwargs):
+        self.range_min = range_min
+        self.range_max = range_max
+        super().__init__(*args, **kwargs)
+
+    def render(self, name, value, attrs=None, renderer=None):
+        attrs = attrs or {}
+
+        field_id = attrs.get("id", f"id_{name}")
+
+        value = "" if value is None else value
+
+        number_attrs = {
+            "id": field_id,
+            "name": name,
+            "class": "form-control",
+            "type": "number",
+            "min": str(self.range_min),
+            "max": str(self.range_max),
+            "value": str(value),
+        }
+
+        range_id = f"{field_id}_range"
+
+        return format_html(
+            """
+            <div class="range-number-field">
+                <input
+                    type="range"
+                    id="{range_id}"
+                    class="form-range"
+                    min="{minimum}"
+                    max="{maximum}"
+                    value="{value}"
+                    oninput="document.getElementById('{field_id}').value=this.value"
+                >
+
+                <input
+                    id="{field_id}"
+                    name="{name}"
+                    class="form-control"
+                    type="number"
+                    min="{minimum}"
+                    max="{maximum}"
+                    value="{value}"
+                    oninput="document.getElementById('{range_id}').value=this.value"
+                >
+            </div>
+            """,
+            range_id=range_id,
+            field_id=field_id,
+            name=name,
+            minimum=self.range_min,
+            maximum=self.range_max,
+            value=value,
+        )
 
 TEXT_CLASSES = (
     "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg "
@@ -252,13 +312,13 @@ class InterestedMajorForm(forms.ModelForm):
                     "placeholder": "نام رشته",
                 }
             ),
-            "interest_score": forms.NumberInput(
-                attrs={
-                    "class": TEXT_CLASSES,
-                    "min": "0",
-                    "max": "10",
-                }
-            ),
+            "interest_score": RangeNumberWidget(
+    range_min=0,
+    range_max=10,
+    attrs={
+        "class": "form-control",
+    },
+),
         }
 
 
@@ -288,30 +348,37 @@ class CriterionWeightForm(forms.ModelForm):
             "faculty_quality",
             "job_market",
             "income_potential",
-            "immigration_potential",
-            "academic_career",
+            "immigration_potential"
         ]
 
         widgets = {
-            "interest": forms.NumberInput(
-                attrs={"class": TEXT_CLASSES, "min": "0", "max": "10"}
-            ),
-            "university_reputation": forms.NumberInput(
-                attrs={"class": TEXT_CLASSES, "min": "0", "max": "10"}
-            ),
-            "faculty_quality": forms.NumberInput(
-                attrs={"class": TEXT_CLASSES, "min": "0", "max": "10"}
-            ),
-            "job_market": forms.NumberInput(
-                attrs={"class": TEXT_CLASSES, "min": "0", "max": "10"}
-            ),
-            "income_potential": forms.NumberInput(
-                attrs={"class": TEXT_CLASSES, "min": "0", "max": "10"}
-            ),
-            "immigration_potential": forms.NumberInput(
-                attrs={"class": TEXT_CLASSES, "min": "0", "max": "10"}
-            ),
-            "academic_career": forms.NumberInput(
-                attrs={"class": TEXT_CLASSES, "min": "0", "max": "10"}
-            ),
+            "interest": RangeNumberWidget(
+    range_min=0,
+    range_max=10,
+),
+
+"university_reputation": RangeNumberWidget(
+    range_min=0,
+    range_max=10,
+),
+
+"faculty_quality": RangeNumberWidget(
+    range_min=0,
+    range_max=10,
+),
+
+"job_market": RangeNumberWidget(
+    range_min=0,
+    range_max=10,
+),
+
+"income_potential": RangeNumberWidget(
+    range_min=0,
+    range_max=10,
+),
+
+"immigration_potential": RangeNumberWidget(
+    range_min=0,
+    range_max=10,
+),
         }

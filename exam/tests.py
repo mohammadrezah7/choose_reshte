@@ -251,7 +251,6 @@ class CriterionWeightTest(TestCase):
             job_market=8,
             income_potential=7,
             immigration_potential=6,
-            academic_career=5,
         )
 
         self.assertEqual(weights.interest, 10)
@@ -266,7 +265,6 @@ class CriterionWeightTest(TestCase):
                 "job_market": 5,
                 "income_potential": 5,
                 "immigration_potential": 5,
-                "academic_career": 5,
             }
         )
 
